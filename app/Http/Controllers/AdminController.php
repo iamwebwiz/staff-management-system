@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Http\Requests\EditStaffRequest;
 use App\Staff;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -27,7 +28,7 @@ class AdminController extends Controller
     		$image = $request->image->move(storage_path('app/public/staff'), $filename);
     	}
     	else {
-    		return "No file selected!";
+    		return redirect()->back()->with('err', 'No file selected!');
     	}
 
     	// Create new staff
@@ -54,5 +55,41 @@ class AdminController extends Controller
     	$staff = Staff::where('id', $staff_id)->first();
     	$staff->delete();
     	return redirect()->back()->with('message', 'Successfully removed staff member from database');
+    }
+
+    public function postEditStaff(EditStaffRequest $request, $staff_id){
+    	$staff = Staff::find($staff_id);
+
+    	if ($request->hasFile('image')){
+    		$image = $request->file('image');
+    		$filename = $staff->name . time() . '.' . $request->image->getClientOriginalExtension();
+    		$image = $request->image->move(storage_path('app/public/staff'), $filename);
+    	}
+    	else {
+    		// return redirect()->back()->with('err', 'No file selected!');
+    		$filename = $staff->image;
+    	}
+
+    	$staff->name = $request['name'];
+    	$staff->email = $request['email'];
+    	$staff->age = $request['age'];
+    	$staff->phone = $request['phone'];
+    	if ($filename){
+    		$staff->image = $filename;
+    	}
+    	$staff->address = $request['address'];
+    	$staff->city = $request['city'];
+    	$staff->state = $request['state'];
+    	$staff->country = $request['country'];
+    	if ($request['level'] != NULL){
+    		$staff->level = $request['level'];
+    	}
+    	$staff->level = $staff->level;
+
+    	if ($staff->update()){
+    		// update successful
+    		return redirect()->route('all-staff-members')->with('message', 'Staff details updated successfully!');
+    	}
+    	return redirect()->back();
     }
 }
