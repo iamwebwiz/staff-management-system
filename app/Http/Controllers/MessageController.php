@@ -31,10 +31,8 @@ class MessageController extends Controller
 
         SendMessageJob::dispatch($staff,$create_message);
 
-        return "Message sent";
-
-//        return Mail::to($staff)->send(new EmailStaff($staff,$create_message));
-
+        return redirect()->route('all-staff-members');
+        
     }
 
 
