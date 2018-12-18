@@ -18,17 +18,22 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/new-staff', 'HomeController@newStaff')->name('new-staff');
-Route::get('/all-staff-members', 'HomeController@allStaffMembers')->name('all-staff-members');
+
+
+
+
+Route::get('/new-staff', 'StaffController@newStaff')->name('new-staff');
+Route::get('/all-staff-members', 'StaffController@allStaffMembers')->name('all-staff-members');
+
 Route::post('add-new-staff', [
-	'uses' => 'AdminController@addNewStaff',
+	'uses' => 'StaffController@addNewStaff',
 	'as' => 'add-new-staff',
 	'middleware' => 'auth'
 ]);
 
-Route::get('delete-staff/{id}', 'AdminController@deleteStaff');
+Route::get('delete-staff/{id}', 'StaffController@deleteStaff');
+Route::get('edit-staff/{id}', 'StaffController@editStaff');
 
-Route::get('edit-staff/{id}', 'HomeController@editStaff');
 
 
 
@@ -39,6 +44,6 @@ Route::post('send/email', 'MessageController@sendMessage')->name('send-staff-mes
 
 
 Route::post('edit-staff/{id}', [
-	'uses' => 'AdminController@postEditStaff',
+	'uses' => 'StaffController@postEditStaff',
 	'as' => 'edit-staff'
 ]);
