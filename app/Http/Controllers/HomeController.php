@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AuditTrail;
 use Illuminate\Http\Request;
 use App\Staff;
 
@@ -24,7 +25,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $recent_activities = AuditTrail::latest()->get();
+        return view('home', compact('recent_activities'));
     }
 
     public function newStaff(){
