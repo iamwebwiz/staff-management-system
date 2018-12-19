@@ -36,7 +36,6 @@
 								<td class="text-center">
 									<a href="{{ url('/edit-staff/'.$staff->id) }}" class="btn btn-info">Edit</a>
 									<a href="{{ url('/delete-staff/'.$staff->id) }}" class="btn btn-danger">Delete</a>
-									<a href="{{ route('email-staff', $staff) }}" class="btn btn-success">Message</a>
 								</td>
 							</tr>
 						</tbody>
