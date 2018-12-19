@@ -20,6 +20,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/new-staff', 'HomeController@newStaff')->name('new-staff');
 Route::get('/all-staff-members', 'HomeController@allStaffMembers')->name('all-staff-members');
+
 Route::post('add-new-staff', [
 	'uses' => 'AdminController@addNewStaff',
 	'as' => 'add-new-staff',
@@ -31,14 +32,33 @@ Route::get('delete-staff/{id}', 'AdminController@deleteStaff');
 Route::get('edit-staff/{id}', 'HomeController@editStaff');
 
 
-
 Route::get('create/{staff}/message', 'MessageController@createMessage')->name('email-staff');
 Route::post('send/email', 'MessageController@sendMessage')->name('send-staff-message');
-
-
-
 
 Route::post('edit-staff/{id}', [
 	'uses' => 'AdminController@postEditStaff',
 	'as' => 'edit-staff'
 ]);
+
+
+
+Route::get('create/{staff}/payroll', [
+    'uses' => 'PayrollController@create',
+    'as' => 'create-staff-payroll'
+]);
+
+
+
+
+Route::post('save/payroll', [
+    'uses' => 'PayrollController@store',
+    'as' => 'store-staff-payroll'
+]);
+
+Route::get('/all-staff-members/payroll', 'PayrollController@index')->name('all-staff-members-payroll');
+
+Route::get('send/{staff}/payroll/{payroll}', [
+    'uses' => 'PayrollController@sendStaffPayroll',
+    'as' => 'send-staff-payroll'
+]);
+
