@@ -30,6 +30,14 @@ Route::get('delete-staff/{id}', 'AdminController@deleteStaff');
 
 Route::get('edit-staff/{id}', 'HomeController@editStaff');
 
+
+
+Route::get('create/{staff}/message', 'MessageController@createMessage')->name('email-staff');
+Route::post('send/email', 'MessageController@sendMessage')->name('send-staff-message');
+
+
+
+
 Route::post('edit-staff/{id}', [
 	'uses' => 'AdminController@postEditStaff',
 	'as' => 'edit-staff'
