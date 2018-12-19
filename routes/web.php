@@ -20,8 +20,6 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-
-
 Route::get('/new-staff', 'StaffController@newStaff')->name('new-staff');
 Route::get('/all-staff-members', 'StaffController@allStaffMembers')->name('all-staff-members');
 
@@ -39,8 +37,6 @@ Route::get('edit-staff/{id}', 'StaffController@editStaff');
 
 Route::get('create/{staff}/message', 'MessageController@createMessage')->name('email-staff');
 Route::post('send/email', 'MessageController@sendMessage')->name('send-staff-message');
-
-
 
 
 Route::post('edit-staff/{id}', [

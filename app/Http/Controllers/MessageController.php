@@ -27,12 +27,8 @@ class MessageController extends Controller
             'subject' => $sendMessageRequest->get('subject'),
             'content' => $sendMessageRequest->get('content')
         ]);
-
-
         SendMessageJob::dispatch($staff,$create_message);
-
         return redirect()->route('all-staff-members');
-        
     }
 
 

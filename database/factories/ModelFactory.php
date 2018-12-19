@@ -22,3 +22,25 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+
+
+
+
+$factory->define(App\Staff::class, function (Faker\Generator $faker) {
+
+    $levels = ['Intern', 'Junior', 'Senior', 'Supervisor', 'Manager'];
+
+    return [
+        'name' => $faker->name,
+        'email' => $faker->unique()->safeEmail,
+        'age' => $faker->randomNumber(),
+        'phone' => $faker->phoneNumber,
+        'image' => $faker->imageUrl(),
+        'address' => $faker->address,
+        'city' => $faker->city,
+        'state' => $faker->city,
+        'country' => $faker->country,
+        'level' => $levels[rand(0,4)],
+    ];
+});

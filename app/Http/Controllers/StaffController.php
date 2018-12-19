@@ -13,39 +13,46 @@ class StaffController extends Controller implements RespondsToStaffCreated
 {
     public $staff_repository;
 
-    public function __construct(StaffRepository $staff_repository){
+    public function __construct(StaffRepository $staff_repository)
+    {
         $this->middleware('auth');
         $this->staff_repository = $staff_repository;
     }
 
 
-    public function newStaff(){
+    public function newStaff()
+    {
         return view('new-staff');
     }
 
-    public function allStaffMembers(){
+    public function allStaffMembers()
+    {
         $staff = Staff::orderBy('created_at', 'asc')->get();
         return view('all-staff-members', compact('staff'));
     }
 
-    public function editStaff($staff_id){
+    public function editStaff($staff_id)
+    {
         $staff =  Staff::find($staff_id);
         return view('edit-staff-member', compact('staff'));
     }
 
 
-    public function addNewStaff(CreateStaffRequest $request){
+    public function addNewStaff(CreateStaffRequest $request)
+    {
         return $this->staff_repository->createStaff($request, $this);
     }
 
 
-    public function deleteStaff($staff_id){
+    public function deleteStaff($staff_id)
+    {
         return $this->staff_repository->deleteStaff($staff_id);
     }
 
 
 
-    public function postEditStaff(EditStaffRequest $request, $staff_id){
+    public function postEditStaff(EditStaffRequest $request, $staff_id)
+    {
         return $this->staff_repository->updateStaffProfile($request,$staff_id, $this);
     }
 

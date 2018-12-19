@@ -34,10 +34,8 @@ class StaffRepository
         $create_staff = Staff::create($staff_details);
 
         if ($create_staff) {
-
             return $respondsToStaffCreated->staffCreatedSuccessfully("Staff Created Successfully");
         }
-
         return $respondsToStaffCreated->staffCreatedUnSuccessfully("Unable to create Staff");
 
     }
@@ -46,7 +44,6 @@ class StaffRepository
 
     public function updateStaffProfile(Request $request, $staff_id,RespondsToStaffCreated $respondsToStaffCreated){
         $staff = Staff::find($staff_id);
-
         $filename = $this->profile_image->saveProfileImage($request);
         if (!$filename) {
             $filename = $staff->image;
@@ -55,7 +52,6 @@ class StaffRepository
         $staff_details = $request->except("_token");
         $staff_details = array_add($staff_details, "image",$filename);
         $staff_details = array_add($staff_details, "level",$request['level']);
-
         $update_staff = Staff::where('id', $staff->id)->update($staff_details);
 
         if ($update_staff) {
@@ -72,8 +68,6 @@ class StaffRepository
         $staff->delete();
         return redirect()->back()->with('message', 'Successfully removed staff member from database');
     }
-
-
 
 
 
