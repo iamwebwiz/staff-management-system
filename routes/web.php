@@ -11,6 +11,10 @@
 |
 */
 
+Route::get('/test', function () {
+    return view("pay-slip");
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -48,8 +52,6 @@ Route::get('create/{staff}/payroll', [
 ]);
 
 
-
-
 Route::post('save/payroll', [
     'uses' => 'PayrollController@store',
     'as' => 'store-staff-payroll'
@@ -58,7 +60,10 @@ Route::post('save/payroll', [
 Route::get('/all-staff-members/payroll', 'PayrollController@index')->name('all-staff-members-payroll');
 
 Route::get('send/{staff}/payroll/{payroll}', [
-    'uses' => 'PayrollController@sendStaffPayroll',
+    'uses' => 'MessageController@sendStaffPayroll',
     'as' => 'send-staff-payroll'
 ]);
+
+
+
 

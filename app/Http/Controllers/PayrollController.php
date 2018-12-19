@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendMessageJob;
+use App\Message;
 use App\Payroll;
 use App\Staff;
 use Carbon\Carbon;
@@ -50,11 +52,6 @@ class PayrollController extends Controller
 
 
 
-
-    public function sendStaffPayroll(Staff $staff, Payroll $payroll){
-
-        return $staff;
-    }
 
 
 
