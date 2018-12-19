@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Message;
 use App\Observers\AdminObserver;
+use App\Observers\MessageObserver;
+use App\Observers\PayrollObserver;
 use App\Observers\StaffObserver;
+use App\Payroll;
 use App\Staff;
 use App\User;
 use Illuminate\Support\Facades\Schema;
@@ -22,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
 
         User::observe(AdminObserver::class);
         Staff::observe(StaffObserver::class);
+        Payroll::observe(PayrollObserver::class);
+        Message::observe(MessageObserver::class);
+
     }
 
     /**

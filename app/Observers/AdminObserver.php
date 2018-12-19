@@ -29,7 +29,7 @@ class AdminObserver
             'admin_id' => $user->id,
             'resource_type_affected' => 'admin',
             'affected_resource_id' => $user->id,
-            'trail_activity_details' => 'Admin '.$user->name.' Just created an account on '.$user->created_at,
+            'trail_activity_details' => 'Admin '.$user->name.' was added as an administrator on '.$user->created_at.' by '.auth()->user()->name,
         ]);
     }
 
