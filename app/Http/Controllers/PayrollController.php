@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendMessageJob;
+use App\Jobs\SendPaySlipJob;
 use App\Message;
 use App\Payroll;
 use App\Staff;
@@ -42,9 +43,17 @@ class PayrollController extends Controller
 
         if ($create_payroll) {
 
+            $staff = Staff::where('id', $request->get('staff_id'))->first();
+
+            $create_message = Message::create([
+                'sender_id' => auth()->id(),
+                'subject' => "Your Invoice for ".$create_payroll->month." ".$create_payroll->year,
+                'content' => "Invoice sent to ".$staff->name." for ".$create_payroll->month." ".$create_payroll->year,
+            ]);
+
+            SendPaySlipJob::dispatch($staff,$create_message,$create_payroll);
             return redirect()->route("all-staff-members-payroll");
         }
-
 
         return redirect()->back();
 

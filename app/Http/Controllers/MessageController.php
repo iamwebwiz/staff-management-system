@@ -51,10 +51,7 @@ class MessageController extends Controller
             'content' => "Invoice sent to ".$staff->name." for ".$payroll->month." ".$payroll->year,
         ]);
 
-//        SendPaySlipJob::dispatch($staff,$create_message,$payroll);
-
-        Mail::to($staff)->send(new SendPayslipEmail($staff,$create_message, $payroll));
-
+        SendPaySlipJob::dispatch($staff,$create_message,$payroll);
         return redirect()->route('all-staff-members-payroll');
 
     }
