@@ -3,16 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EditStaffRequest;
+use App\Jobs\SendAdminLoginJob;
+use App\Mail\SendAdminLoginDetails;
 use App\Staff;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
 	public function __construct(){
 		$this->middleware('auth');
 	}
+
+
+	public function index(){
+	    $admins = User::all();
+	    return view('all-admin-members', compact('admins'));
+    }
+
+	public function create(){
+	    return view('new-admin');
+    }
+
+
+    public function store(Request $request){
+
+	    $create_admin_details = $request->except('_token');
+	    $generate_password = str_random(5);
+
+	    $create_admin_details = array_add($create_admin_details, 'password', bcrypt($generate_password));
+	    $create_admin = User::create($create_admin_details);
+
+        if ($create_admin) {
+
+            $password = ['password' => $generate_password];
+            SendAdminLoginJob::dispatch($create_admin,$password);
+//            Mail::to($create_admin)->send(new SendAdminLoginDetails($create_admin,$password));
+            return redirect()->route('all-admins');
+        }
+	    return redirect()->back();
+    }
+
+
+
     public function addNewStaff(Request $request){
     	$this->validate($request, [
     		'name' => 'required|max:255',
@@ -50,6 +85,9 @@ class AdminController extends Controller
     	}
     	return redirect()->back();
     }
+
+
+
 
     public function deleteStaff($staff_id){
     	$staff = Staff::where('id', $staff_id)->first();
