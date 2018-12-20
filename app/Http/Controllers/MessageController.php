@@ -27,6 +27,7 @@ class MessageController extends Controller
         $staff = Staff::findOrFail($sendMessageRequest->get('id'));
         $create_message = Message::create([
             'sender_id' => auth()->id(),
+            'recipient_id' => $staff->id,
             'subject' => $sendMessageRequest->get('subject'),
             'content' => $sendMessageRequest->get('content')
         ]);
@@ -47,6 +48,7 @@ class MessageController extends Controller
         $payroll = Payroll::with('staff')->whereId($payroll->id)->first();
         $create_message = Message::create([
             'sender_id' => auth()->id(),
+            'recipient_id' => $payroll->staff->id,
             'subject' => "Your Invoice for ".$payroll->month." ".$payroll->year,
             'content' => "Invoice sent to ".$staff->name." for ".$payroll->month." ".$payroll->year,
         ]);

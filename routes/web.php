@@ -22,6 +22,19 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/create/admin', 'AdminController@create')->name('create-admin');
+
+Route::post('add-new-admin', [
+    'uses' => 'AdminController@store',
+    'as' => 'add-new-admin',
+    'middleware' => 'auth'
+]);
+
+
+Route::get('/all/admins', 'AdminController@index')->name('all-admins');
+
+
 Route::get('/new-staff', 'HomeController@newStaff')->name('new-staff');
 Route::get('/all-staff-members', 'HomeController@allStaffMembers')->name('all-staff-members');
 
