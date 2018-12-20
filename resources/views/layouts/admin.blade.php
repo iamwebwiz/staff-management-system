@@ -5,6 +5,8 @@
 				<a href="{{ url('/home') }}" id="dash" class="list-group-item"><i class="fa fa-dashboard"></i> Dashboard</a>
 				<a href="{{ url('/new-staff') }}" id="newStaff" class="list-group-item"><i class="fa fa-plus"></i> Add New Staff</a>
 				<a href="{{ url('/all-staff-members') }}" id="allStaff" class="list-group-item"><i class="fa fa-users"></i> View Staff Members</a>
+				<a href="{{ url('/all-staff-members/payroll') }}" id="allStaff" class="list-group-item"><i class="fa fa-users"></i> View Payrolls</a>
+				<a href="{{ url('/all/admins') }}" id="allStaff" class="list-group-item"><i class="fa fa-users"></i> View All Admins</a>
 			</div>
 		</div>
 		<div class="col-md-9">
