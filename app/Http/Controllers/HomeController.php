@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\AuditTrail;
-use Illuminate\Http\Request;
-use App\Staff;
 
 class HomeController extends Controller
 {

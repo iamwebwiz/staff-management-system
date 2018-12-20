@@ -10,8 +10,9 @@
 		<h2>View all staff members</h2>
 		<hr>
 		<a href="{{ url('/home') }}" class="btn btn-primary btn-md"><i class="fa fa-dashboard"></i> Dashboard</a>
-		<a href="{{ url('/new-staff') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> Add new staff</a>
-		<a href="{{ url('/all-staff-members/payroll') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> View Payrolls</a>
+		<a href="{{ url('/new-staff') }}" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add new staff</a>
+		<a href="{{ url('/all-staff-members/payroll') }}" class="btn btn-info btn-md"><i class="fa fa-plus"></i> View Payrolls</a>
+		<a href="{{ url('/all/admins') }}" class="btn btn-default btn-md"><i class="fa fa-plus"></i> All Admins</a>
 		<hr>
 		@include('parts.message-block')
 		<div class="table-responsive">
