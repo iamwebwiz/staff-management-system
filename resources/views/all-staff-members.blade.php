@@ -40,6 +40,7 @@
 									<a href="{{ route('email-staff', $staff) }}" class="btn btn-success">Message</a>
 									<a href="{{ route('create-staff-payroll', $staff) }}" class="btn btn-success">Generate Payroll</a>
 									{{--<a href="{{ route('create-staff-payroll', $staff) }}" class="btn btn-success">Generate Payroll</a>--}}
+
 								</td>
 							</tr>
 						</tbody>
