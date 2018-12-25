@@ -29,6 +29,7 @@ class MessageObserver
 
         $create_audit_trail = AuditTrail::create([
             'admin_id' => auth()->id(),
+            'recipient_id' => $message->staff->id,
             'resource_type_affected' => 'messaging',
             'affected_resource_id' => $message->id,
             'trail_activity_details' => 'Admin '.Auth::user()->name.' sent message to staff '.$message->staff->name.' on '.$message->created_at,

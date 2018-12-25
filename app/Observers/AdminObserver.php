@@ -25,7 +25,7 @@ class AdminObserver
      */
     public function created(User $user)
     {
-        $create_audit_trail = AuditTrail::create([
+        AuditTrail::create([
             'admin_id' => $user->id,
             'resource_type_affected' => 'admin',
             'affected_resource_id' => $user->id,
@@ -42,11 +42,7 @@ class AdminObserver
      */
     public function updated(User $user)
     {
-//        $time = Carbon::now();
-//        $user->updated_at = $time;
-//        $user->save();
-
-        $create_audit_trail = AuditTrail::create([
+         AuditTrail::create([
             'admin_id' => $user->id,
             'resource_type_affected' => 'admin',
             'affected_resource_id' => $user->id,

@@ -7,11 +7,11 @@
 
 <div class="panel panel-default">
 	<div class="panel-body">
-		<h2>View all staff members payroll</h2>
+		<h2>View all staff members Payslips</h2>
 		<hr>
 		<a href="{{ url('/home') }}" class="btn btn-primary btn-md"><i class="fa fa-dashboard"></i> Dashboard</a>
-		<a href="{{ url('/new-staff') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> Add new staff</a>
-		<a href="{{ url('/all-staff-members/payroll') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> View Payrolls</a>
+		<a href="{{ url('/new-staff') }}" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add new staff</a>
+		<a href="{{ url('/all-staff-members/payroll') }}" class="btn btn-info btn-md"><i class="fa fa-plus"></i> View Payrolls</a>
 		<hr>
 		@include('parts.message-block')
 		<div class="table-responsive">
@@ -43,7 +43,7 @@
 					@endforeach
 				</table>
 			@else
-				<h1>There are no staff yet!</h1>
+				<h1>There are no staff payslips generated yet!</h1>
 			@endif
 		</div>
 	</div>

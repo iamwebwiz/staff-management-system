@@ -13,10 +13,12 @@
 			<a href="{{ url('/all-staff-members') }}" class="btn btn-primary btn-md"><i class="fa fa-users"></i> View staff members</a>
 			<hr>
 			@include('parts.message-block')
-			<img width="300" src="{{ asset('/storage/staff/'.$staff->image) }}" class="thumbnail" alt="{{ $staff->name }}">
+			<img width="300" src="{{ asset('app/public/staff/'.$staff->image) }}" class="thumbnail" alt="{{ $staff->name }}">
 			<br>
 			<form action="{{ route('edit-staff', ['id' => $staff->id]) }}" method="post" enctype="multipart/form-data">
 				{{ csrf_field() }}
+
+				{{ method_field('PUT') }}
 				<div class="form-group">
 					<label for="name">Full name</label>
 					<input type="text" name="name" placeholder="Full name" value="{{ $staff->name }}" class="form-control">

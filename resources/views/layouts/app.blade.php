@@ -65,7 +65,7 @@
                                 <ul class="dropdown-menu" role="menu">
 
                                     <li>
-                                        <a href="{{ url('/create/admin') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> Create Admin</a>
+                                        <a href="{{ route('create-admin') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> Create Admin</a>
                                     </li>
                                     <li>
                                         <a href="{{ route('logout') }}"
