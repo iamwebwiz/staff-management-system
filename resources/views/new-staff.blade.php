@@ -10,7 +10,7 @@
 		<h2>Add new staff</h2>
 		<hr>
 		<a href="{{ url('/home') }}" class="btn btn-primary btn-md"><i class="fa fa-dashboard"></i> Dashboard</a>
-		<a href="{{ url('/all-staff-members') }}" class="btn btn-primary btn-md"><i class="fa fa-users"></i> View staff members</a>
+		<a href="{{ url('/all-staff-members') }}" class="btn btn-info btn-md"><i class="fa fa-users"></i> View Staff Members</a>
 		<hr>
 		@include('parts.message-block')
 		<form action="{{ route('add-new-staff') }}" method="post" enctype="multipart/form-data">

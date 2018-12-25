@@ -63,9 +63,13 @@
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">
+
+                                    <li>
+                                        <a href="{{ route('create-admin') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> Create Admin</a>
+                                    </li>
                                     <li>
                                         <a href="{{ route('logout') }}"
-                                            onclick="event.preventDefault();
+                                           onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
