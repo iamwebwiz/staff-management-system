@@ -36,10 +36,11 @@
 								<td class="text-center">{{ $staff->level }}</td>
 								<td class="text-center">{{ $staff->phone }}</td>
 								<td class="text-center">
-									<a href="{{ url('/edit-staff/'.$staff->id) }}" class="btn btn-info">Edit</a>
-									<a href="{{ url('/delete-staff/'.$staff->id) }}" class="btn btn-danger">Delete</a>
+									<a href="{{ route('show-staff',$staff) }}" class="btn btn-info">View</a>
+									<a href="{{ url('/staff/'.$staff->id.'/edit') }}" class="btn btn-info">Edit</a>
+									<a href="{{ route('delete-staff',$staff) }}" class="btn btn-danger">Delete</a>
 									<a href="{{ route('email-staff', $staff) }}" class="btn btn-success">Message</a>
-									<a href="{{ route('create-staff-payroll', $staff) }}" class="btn btn-success">Generate Payroll</a>
+									<a href="{{ route('create-staff-payroll', $staff) }}" class="btn btn-success">Generate Payslip</a>
 									{{--<a href="{{ route('create-staff-payroll', $staff) }}" class="btn btn-success">Generate Payroll</a>--}}
 								</td>
 							</tr>

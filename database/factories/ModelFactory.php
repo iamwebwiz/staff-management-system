@@ -44,3 +44,21 @@ $factory->define(App\Staff::class, function (Faker\Generator $faker) {
         'level' => $levels[rand(0,4)],
     ];
 });
+
+
+$factory->define(App\Payroll::class, function (Faker\Generator $faker) {
+
+    $percentage = rand(1,10);
+    $gross_salary = $faker->numberBetween(10000, 14500);
+
+    return [
+        'staff_id' => \App\Staff::all()->random()->id,
+        'gross_salary' => $gross_salary,
+        'tax_percentage' => $percentage,
+        'net_salary' => (1 - ($percentage / 100)) *$gross_salary,
+        'month' => $faker->monthName,
+        'year' => $faker->year(),
+        'comment' => $faker->sentence,
+    ];
+
+});

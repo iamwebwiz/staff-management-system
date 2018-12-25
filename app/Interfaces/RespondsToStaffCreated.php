@@ -11,8 +11,8 @@ namespace App\Interfaces;
 
 interface RespondsToStaffCreated
 {
-    public function staffCreatedSuccessfully($message);
+    public function successfulResponse($message);
 
-    public function staffCreatedUnSuccessfully($message);
+    public function unSuccessfulResponse($message);
 
 }

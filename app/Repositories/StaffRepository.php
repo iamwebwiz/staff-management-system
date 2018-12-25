@@ -26,39 +26,41 @@ class StaffRepository
 
         $profile_image = $this->profile_image->saveProfileImage($request);
         if (!$profile_image) {
-            return $respondsToStaffCreated->staffCreatedUnSuccessfully("No file selected!");
+            return $respondsToStaffCreated->unSuccessfulResponse("No file selected!");
         }
 
         $staff_details = $request->except("_token");
         $staff_details = array_add($staff_details, "image",$profile_image);
         $create_staff = Staff::create($staff_details);
-
+        $response = $respondsToStaffCreated->unSuccessfulResponse("Unable to create Staff");
         if ($create_staff) {
-            return $respondsToStaffCreated->staffCreatedSuccessfully("Staff Created Successfully");
+            $response = $respondsToStaffCreated->successfulResponse("Staff Created Successfully");
         }
-        return $respondsToStaffCreated->staffCreatedUnSuccessfully("Unable to create Staff");
-
+        return $response;
     }
 
+
+    public function getOneStaff(Staff $staff){
+        return view("staff-show", compact('staff'));
+    }
 
 
     public function updateStaffProfile(Request $request, $staff_id,RespondsToStaffCreated $respondsToStaffCreated){
         $staff = Staff::find($staff_id);
         $filename = $this->profile_image->saveProfileImage($request);
+
         if (!$filename) {
             $filename = $staff->image;
         }
-
-        $staff_details = $request->except("_token");
+//        dd($filename);
+        $staff_details = $request->except("_token",'_method');
         $staff_details = array_add($staff_details, "image",$filename);
-        $staff_details = array_add($staff_details, "level",$request['level']);
         $update_staff = Staff::where('id', $staff->id)->update($staff_details);
-
+        $response = $respondsToStaffCreated->unSuccessfulResponse("Unable to Update Staff");
         if ($update_staff) {
-            return $respondsToStaffCreated->staffCreatedSuccessfully("Staff Updated Successfully");
+            $response = $respondsToStaffCreated->successfulResponse("Staff Updated Successfully");
         }
-        return $respondsToStaffCreated->staffCreatedUnSuccessfully("Unable to Update Staff");
-
+        return $response;
     }
 
 

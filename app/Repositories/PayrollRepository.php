@@ -9,26 +9,22 @@
 namespace App\Repositories;
 
 
-use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\PayslipController;
 use App\Payroll;
 use App\Staff;
 use Illuminate\Http\Request;
 
 class PayrollRepository
 {
-    public function __construct()
-    {
-
-    }
 
 
-    public function createPayroll(Request $request, PayrollController $payrollController){
+    public function createPayslip(Request $request, PayslipController $payrollController){
         $staff = Staff::where('id', $request->get('staff_id'))->first();
-        $create_payroll_details = $this->buildPayrollProperties($request);
+        $create_payroll_details = $this->buildPayslipProperties($request);
         $create_payroll = Payroll::create($create_payroll_details);
 
         if ($create_payroll) {
-            return $payrollController->payrollCreatedSuccessfully($create_payroll, $staff);
+            return redirect()->route("all-staff-members-payroll");
         }
         return redirect()->back();
     }
@@ -38,7 +34,7 @@ class PayrollRepository
      * @param Request $request
      * @return array
      */
-    public function buildPayrollProperties(Request $request)
+    public function buildPayslipProperties(Request $request)
     {
         $create_payroll_details = $request->except('_token');
         $tax_percentage = $request->get('tax_percentage');

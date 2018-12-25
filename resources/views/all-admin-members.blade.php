@@ -10,8 +10,8 @@
 		<h2>View all Admins</h2>
 		<hr>
 		<a href="{{ url('/home') }}" class="btn btn-primary btn-md"><i class="fa fa-dashboard"></i> Dashboard</a>
-		<a href="{{ url('/new-staff') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> Add new staff</a>
-		<a href="{{ url('/all-staff-members/payroll') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> View Payrolls</a>
+		<a href="{{ url('/staff/create') }}" class="btn btn-info btn-md"><i class="fa fa-plus"></i> Add new staff</a>
+		<a href="{{ url('/payslips') }}" class="btn btn-success btn-md"><i class="fa fa-plus"></i> View Payrolls</a>
 		<hr>
 		@include('parts.message-block')
 		<div class="table-responsive">
@@ -24,7 +24,7 @@
 						<th class="text-center">Email</th>
 						<th class="text-center">Is Super Admin</th>
 						{{--<th class="text-center">Last Login</th>--}}
-						{{--<th class="text-center">Action</th>--}}
+						<th class="text-center">Action</th>
 					</thead>
 					@foreach($admins as $admin)
 						<tbody>
@@ -39,7 +39,9 @@
 										No
 									@endif
 								</td>
-								{{--<td class="text-center"> today </td>--}}
+								<td class="text-center">
+									<a href="{{ route('edit-admin',$admin) }}" class="btn btn-info">Edit</a>
+								</td>
 							</tr>
 						</tbody>
 						<?php $counter++ ?>

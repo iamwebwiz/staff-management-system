@@ -20,49 +20,51 @@ class StaffController extends Controller implements RespondsToStaffCreated
     }
 
 
-    public function newStaff()
+    public function create()
     {
         return view('new-staff');
     }
 
-    public function allStaffMembers()
+    public function index()
     {
         $staff = Staff::orderBy('created_at', 'asc')->get();
         return view('all-staff-members', compact('staff'));
     }
 
-    public function editStaff($staff_id)
+    public function edit($staff_id)
     {
         $staff =  Staff::find($staff_id);
         return view('edit-staff-member', compact('staff'));
     }
 
 
-    public function addNewStaff(CreateStaffRequest $request)
+    public function store(CreateStaffRequest $request)
     {
         return $this->staff_repository->createStaff($request, $this);
     }
 
+    public function show(Staff $staff){
+        return $this->staff_repository->getOneStaff($staff);
+    }
 
-    public function deleteStaff($staff_id)
+    public function delete($staff_id)
     {
         return $this->staff_repository->deleteStaff($staff_id);
     }
 
 
-
-    public function postEditStaff(EditStaffRequest $request, $staff_id)
+    public function update(EditStaffRequest $request, $staff_id)
     {
         return $this->staff_repository->updateStaffProfile($request,$staff_id, $this);
     }
 
 
-    public function staffCreatedSuccessfully($message = 'New Staff Added to the company&rsquo;s database')
+    public function successfulResponse($message = 'New Staff Added to the company&rsquo;s database')
     {
         return redirect()->route('all-staff-members')->with('message', $message);
     }
 
-    public function staffCreatedUnSuccessfully($message = "Unable to create staff")
+    public function unSuccessfulResponse($message = "Unable to create staff")
     {
         return redirect()->back()->with('err', $message);
     }
