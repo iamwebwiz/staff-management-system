@@ -56,19 +56,7 @@ jobs:
         key: composer-v1-{{ checksum "composer.json" }}
         paths:
         - vendor
-
-    - restore_cache:
-        key: dependency-cache-{{ checksum "package.json" }}
-
-    - run:
-        name: Install NodeJS Packages
-        command: npm install
-
-    - save_cache:
-        key: dependency-cache-{{ checksum "package.json" }}
-        paths:
-        - ./node_modules
-
+        
     - run:
         name: Create SQLite Database
         command: touch database/database.sqlite
