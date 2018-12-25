@@ -19,6 +19,10 @@ jobs:
     steps:
     - checkout
 
+    - run:
+        name: Install PHP Extensions
+        command: sudo docker-php-ext-install gd exif
+
     # Download and cache dependencies
     - restore_cache:
         keys:
@@ -38,10 +42,6 @@ jobs:
         command: cp .env.testing .env
 
     - run:
-        name: Create SQLite Database
-        command: touch database/testing.sqlite
-
-    - run:
         name: Update composer to latest version
         command: composer self-update
 
@@ -56,10 +56,10 @@ jobs:
         key: composer-v1-{{ checksum "composer.json" }}
         paths:
         - vendor
-        
+
     - run:
         name: Create SQLite Database
-        command: touch database/database.sqlite
+        command: touch database/testing.sqlite
 
     - run:
         name: Migrate Laravel Database
