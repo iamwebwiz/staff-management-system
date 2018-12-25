@@ -6,7 +6,6 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
-        "dompdf/dompdf": "0.8.0",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "spinen/laravel-mail-assertions": "^0.3.4"
