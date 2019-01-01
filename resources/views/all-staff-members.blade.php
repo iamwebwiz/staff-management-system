@@ -39,6 +39,7 @@
 									<a href="{{ route('delete-staff',$staff) }}" class="btn btn-danger">Delete</a>
 									<a href="{{ route('email-staff', $staff) }}" class="btn btn-success">Message</a>
 									<a href="{{ route('create-staff-payroll', $staff) }}" class="btn btn-success">Generate Payslip</a>
+
 								</td>
 							</tr>
 						</tbody>
