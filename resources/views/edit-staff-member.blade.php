@@ -9,11 +9,12 @@
 			<h2>Edit {{ $staff->name }}&rsquo;s Profile</h2>
 			<hr>
 			<a href="{{ url('/home') }}" class="btn btn-primary btn-md"><i class="fa fa-dashboard"></i> Dashboard</a>
-			<a href="{{ url('/new-staff') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> Add new staff</a>
-			<a href="{{ url('/all-staff-members') }}" class="btn btn-primary btn-md"><i class="fa fa-users"></i> View staff members</a>
+			<a href="{{ url('/staff/create') }}" class="btn btn-info btn-md"><i class="fa fa-plus"></i> Add new staff</a>
+			<a href="{{ url('/staff') }}" class="btn btn-success btn-md"><i class="fa fa-users"></i> View staff members</a>
 			<hr>
 			@include('parts.message-block')
-			<img width="300" src="{{ asset('app/public/staff/'.$staff->image) }}" class="thumbnail" alt="{{ $staff->name }}">
+
+			<img width="300" src="{{ asset('/storage/staff/'.$staff->image) }}" class="thumbnail" alt="{{ $staff->name }}">
 			<br>
 			<form action="{{ route('edit-staff', ['id' => $staff->id]) }}" method="post" enctype="multipart/form-data">
 				{{ csrf_field() }}
