@@ -16,9 +16,8 @@ class StaffProfileImageRepository
 
     public function saveProfileImage(Request $request, $path = 'app/public/staff'){
         if ($request->hasFile('image')){
-            $image = $request->file('image');
             $filename = $request['name'] . time() . '.' . $request->image->getClientOriginalExtension();
-            $image = $request->image->move(storage_path($path), $filename);
+            $request->image->move(storage_path($path), $filename);
             return $filename;
         }
         else {

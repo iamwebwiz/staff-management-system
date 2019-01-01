@@ -29,14 +29,13 @@ class StaffRepository
             return $respondsToStaffCreated->unSuccessfulResponse("No file selected!");
         }
 
-        $staff_details = $request->except("_token");
+        $staff_details = $request->except("_token","image");
         $staff_details = array_add($staff_details, "image",$profile_image);
         $create_staff = Staff::create($staff_details);
-        $response = $respondsToStaffCreated->unSuccessfulResponse("Unable to create Staff");
         if ($create_staff) {
-            $response = $respondsToStaffCreated->successfulResponse("Staff Created Successfully");
+            return $respondsToStaffCreated->successfulResponse("Staff Created Successfully");
         }
-        return $response;
+        return $respondsToStaffCreated->unSuccessfulResponse("Unable to create Staff");
     }
 
 
