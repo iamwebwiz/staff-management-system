@@ -25,7 +25,7 @@ class CreateStaffRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:staff',
+            'email' => 'required|email|max:255|unique:users',
             'image' => 'required|mimes:jpg,tiff,png,svg,gif,bmp,jpeg|max:10240',
             'address' => 'max:255',
             'level' => 'required'

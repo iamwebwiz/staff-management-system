@@ -8,8 +8,7 @@
 		<div class="panel-body">
 			<h2>Welcome, {{ Auth::user()->name }}</h2>
 			<hr>
-			<a href="{{ route('new-staff') }}" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add new staff</a>
-			<a href="{{ route('all-staff-members') }}" class="btn btn-info btn-md"><i class="fa fa-users"></i> Add New Admin</a>
+			@include('parts.action-buttons')
 			<hr>
 			<p class="lead">
 				<h3>Recent Activity</h3>

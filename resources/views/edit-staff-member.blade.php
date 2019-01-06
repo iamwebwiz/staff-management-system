@@ -6,28 +6,29 @@
 
 	<div class="panel panel-default">
 		<div class="panel-body">
-			<h2>Edit {{ $staff->name }}&rsquo;s Profile</h2>
+			<h2>Edit {{ $staff->user->name }}&rsquo;s Profile</h2>
 			<hr>
-			<a href="{{ url('/home') }}" class="btn btn-primary btn-md"><i class="fa fa-dashboard"></i> Dashboard</a>
-			<a href="{{ url('/staff/create') }}" class="btn btn-info btn-md"><i class="fa fa-plus"></i> Add new staff</a>
-			<a href="{{ url('/staff') }}" class="btn btn-success btn-md"><i class="fa fa-users"></i> View staff members</a>
+
+			@include('parts.action-buttons')
+
 			<hr>
 			@include('parts.message-block')
 
 			<img width="300" src="{{ asset('/storage/staff/'.$staff->image) }}" class="thumbnail" alt="{{ $staff->name }}">
 			<br>
-			<form action="{{ route('edit-staff', ['id' => $staff->id]) }}" method="post" enctype="multipart/form-data">
+			<form action="{{ route('update-staff', ['id' => $staff->id]) }}" method="post" enctype="multipart/form-data">
 				{{ csrf_field() }}
 
 				{{ method_field('PUT') }}
+				<input type="hidden" name="user_id" value="{{ $staff->user_id }}">
 				<div class="form-group">
 					<label for="name">Full name</label>
-					<input type="text" name="name" placeholder="Full name" value="{{ $staff->name }}" class="form-control">
+					<input type="text" name="name" placeholder="Full name" value="{{ $staff->user->name }}" class="form-control">
 				</div>
 
 				<div class="form-group">
 					<label for="email">Email Address</label>
-					<input type="email" name="email" placeholder="Email Address" value="{{ $staff->email }}" class="form-control">
+					<input type="email" name="email" placeholder="Email Address" value="{{ $staff->user->email }}" class="form-control">
 				</div>
 
 				<div class="form-group">
@@ -75,6 +76,20 @@
 						<option value="Supervisor">Supervisor</option>
 						<option value="Manager">Manager</option>
 					</select>
+				</div>
+
+
+				<div class="form-group">
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="is_admin" {{ old('is_admin') ? 'checked' : '' }}> Make Admin
+						</label>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="start_work_date">Work Start Date</label>
+					<input type="date" name="start_work_date" placeholder="12th June, 2018" value="{{ old('start_work_date') }}" class="form-control">
 				</div>
 
 				<div class="form-group">

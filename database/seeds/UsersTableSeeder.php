@@ -12,9 +12,25 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-        	'name' => 'Gbeila Aliu Wahab',
+        	'name' => 'Faiq Eshan Aliu',
         	'email' => 'admin@site.com',
-        	'password' => bcrypt('secret')
+        	'password' => bcrypt('secret'),
+        	'is_admin' => true,
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now(),
         ]);
+
+
+        DB::table('users')->insert([
+            'name' => 'Chiraj Doshi',
+            'email' => 'doshi@site.com',
+            'password' => bcrypt('secret'),
+            'is_admin' => false,
+            'created_at' => \Carbon\Carbon::now(),
+            'updated_at' => \Carbon\Carbon::now(),
+        ]);
+
+
+
     }
 }

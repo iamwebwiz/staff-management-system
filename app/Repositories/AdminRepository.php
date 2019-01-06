@@ -18,22 +18,16 @@ class AdminRepository
 {
 
 
-
     /**
      * @param Request $request
-     * @return Response
+     * @return
      */
     public function createAdmin(Request $request)
     {
         list($create_admin_details, $generate_password) = $this->buildAdminProperties($request);
         $create_admin = User::create($create_admin_details);
-        if ($create_admin) {
-            SendAdminLoginJob::dispatch($create_admin,$password = ['password' => $generate_password]);
-            return redirect()->route('all-admins');
-        }
-
-        return redirect()->back();
-
+        SendAdminLoginJob::dispatch($create_admin, $password = ['password' => $generate_password]);
+        return $create_admin;
     }
 
 
@@ -43,27 +37,30 @@ class AdminRepository
      */
     public function buildAdminProperties(Request $request)
     {
-        $create_admin_details = $request->except('_token');
+        $create_admin_details = ['name' => $request->get('name'), 'email' => $request->get('email')];
         $generate_password = str_random(5);
         $create_admin_details = array_add($create_admin_details, 'password', bcrypt($generate_password));
+        if ($request->get('is_admin')) {
+            $create_admin_details = array_add($create_admin_details, 'is_admin', true);
+        }
         return [$create_admin_details, $generate_password];
     }
 
 
     /**
-     * @param Request $request, $id
-     * @return Response
+     * @param Request $request , $id
+     * @return
      */
-    public function updateAdmin(Request $request, $id){
-        $update_admin = User::where('id',$id)->update($request->except('_token','_method'));
-        if ($update_admin) {
-            return redirect()->route('all-admins');
+    public function updateAdmin(Request $request, $id)
+    {
+        $update_details = ['name' => $request->get('name'), 'email' => $request->get('email')];
+        if ($request->get('is_admin')) {
+            $update_details = array_add($update_details,'is_admin', true);
         }
+        User::where('id', $id)->update($update_details);
 
-        return redirect()->back();
+        return  User::where('id', $id)->first();
     }
-
-
 
 
 }

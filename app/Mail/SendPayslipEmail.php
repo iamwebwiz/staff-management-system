@@ -38,6 +38,7 @@ class SendPayslipEmail extends Mailable
     public function build()
     {
         return $this->view('emails.email-pay-slip')
+            ->to($this->staff->user->email)
             ->subject($this->content->subject);
     }
 }

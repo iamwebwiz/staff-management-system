@@ -6,7 +6,7 @@
 @section('body')
 	<div class="panel panel-default">
 		<div class="panel-body">
-			<h4>Welcome, {{ Auth::user()->name }} {{ "you're about sending a message to ".$staff->name }}</h4>
+			<h4>Welcome, {{ Auth::user()->name }} {{ "you're about sending a message to ".$staff->user->name }}</h4>
 			<hr>
 			<a href="{{ url('/new-staff') }}" class="btn btn-primary btn-md"><i class="fa fa-plus"></i> Add new staff</a>
 			<a href="{{ url('/all-staff-members') }}" class="btn btn-primary btn-md"><i class="fa fa-users"></i> View staff members</a>
@@ -32,7 +32,7 @@
 							<div class="form-group">
 								<label class="col-sm-2" for="inputTo">To</label>
 								<div class="col-sm-10"><input name="email" type="email" class="form-control" id="inputTo"
-															  placeholder="comma separated list of recipients" value="{{ $staff->email }}">
+															  placeholder="comma separated list of recipients" value="{{ $staff->user->email }}">
 								</div>
 							</div>
 							<div class="form-group">

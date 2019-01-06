@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class EditStaffRequest extends FormRequest
+class AdminApproveRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,8 +14,12 @@ class EditStaffRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if (Auth::user()->is_admin == true) {
+            return true;
+        }
+        return false;
     }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -24,12 +29,7 @@ class EditStaffRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:255|string',
-            'level' => 'required',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string',
-            'address' => 'string|max:255',
-            'user_id' => 'required',
+            'leave_id' => 'required'
         ];
     }
 }

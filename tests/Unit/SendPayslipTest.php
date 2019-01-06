@@ -26,13 +26,14 @@ class SendPayslipTest extends TestCase
     {
 
         $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create());
-        $staff = $this->factoryWithoutObservers(Staff::class)->create();
+        $this->factoryWithoutObservers(Staff::class)->create();
         $payslip = $this->factoryWithoutObservers(Payroll::class)->create();
 
+        $staff = Staff::with('user')->first();
         $response = $user->get('send/'.$staff->id.'/payroll/'.$payslip->id);
         $response->assertStatus(302);
 
-        $this->seeEmailTo($staff->email);
+        $this->seeEmailTo($staff->user->email);
         $this->seeEmailSubject("Your Invoice for " . $payslip->month . " " . $payslip->year);
 
     }

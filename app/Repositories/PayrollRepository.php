@@ -17,13 +17,20 @@ use Illuminate\Http\Request;
 class PayrollRepository
 {
 
+    public $message_repository;
+
+    public function __construct(MessageRepository $messageRepository)
+    {
+        $this->message_repository = $messageRepository;
+    }
 
     public function createPayslip(Request $request, PayslipController $payrollController){
-        $staff = Staff::where('id', $request->get('staff_id'))->first();
+        $staff = Staff::with('user')->where('id', $request->get('staff_id'))->first();
         $create_payroll_details = $this->buildPayslipProperties($request);
         $create_payroll = Payroll::create($create_payroll_details);
 
         if ($create_payroll) {
+            $this->message_repository->sendStaffPayrollMessage($staff, $create_payroll);
             return redirect()->route("all-staff-members-payroll");
         }
         return redirect()->back();

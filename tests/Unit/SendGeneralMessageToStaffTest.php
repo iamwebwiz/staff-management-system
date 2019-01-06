@@ -38,10 +38,10 @@ class SendGeneralMessageToStaffTest extends TestCase
         $response = $user->post("/send/message",$message);
         $response->assertStatus(302);
 
+        $staff_auth_account = Staff::with('user')->first();
         $this->seeEmailSubject($message['subject']);
-        $this->seeEmailTo($staff->email);
+        $this->seeEmailTo($staff_auth_account->user->email);
         $this->seeEmailContains($message['content']);
-
 
     }
 
