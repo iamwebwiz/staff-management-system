@@ -9,6 +9,7 @@
 namespace App\Repositories;
 
 
+use App\Jobs\SendLeaveStatusEmail;
 use App\Staff;
 use App\StaffLeave;
 use Illuminate\Http\Request;
@@ -22,7 +23,10 @@ class LeaveManagementRepository
     }
 
     public function applyForLeave(Request $request){
-        $create_staff_leave = StaffLeave::create($request->all());
+
+        $leave_details = $this->buildLeaveProperties($request);
+
+        $create_staff_leave = StaffLeave::create($leave_details);
         if ($create_staff_leave) {
             return redirect()->route("my-leave", $create_staff_leave->staff_id);
         }
@@ -48,17 +52,28 @@ class LeaveManagementRepository
 
     public function adminApproveLeave(Request $request)
     {
-        StaffLeave::where('id', $request->get('leave_id'))->update(['is_approved' => true]);
+        $approve_leave = StaffLeave::where('id', $request->get('leave_id'))->update(['is_approved' => true]);
+
+        if ($approve_leave) {
+            $leave = StaffLeave::find($request->get('leave_id'));
+            $staff = Staff::with('user')->find($leave->staff_id);
+            SendLeaveStatusEmail::dispatch($staff,$leave);
+        }
 
         return redirect()->route('approved-leave');
     }
 
-
-
-
-
-
-
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function buildLeaveProperties(Request $request)
+    {
+        $staff = Staff::find($request->get('user_id'));
+        $leave_details = $request->except('token', 'user_id');
+        $leave_details = array_add($leave_details, 'staff_id', $staff->id);
+        return $leave_details;
+    }
 
 
 }

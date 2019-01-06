@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Mail\LeaveStatusChanged;
 use App\Staff;
 use App\StaffLeave;
 use Illuminate\Bus\Queueable;
@@ -9,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Mail;
 
 class SendLeaveStatusEmail implements ShouldQueue
 {
@@ -36,6 +38,6 @@ class SendLeaveStatusEmail implements ShouldQueue
      */
     public function handle()
     {
-        //
+        Mail::to($this->staff->user->email)->send(new LeaveStatusChanged($this->staff,$this->leave));
     }
 }

@@ -34,9 +34,9 @@
 								<td class="text-center">{{ $leaf->reason_for_leave }}</td>
 								<td class="text-center">
 									@if ($leaf->is_approved == true)
-										{{ 'Approved' }}
+										<span class="text-info">{{ 'Approved' }} </span>
 									@else
-										{{ 'Pending Approval' }}
+										<span class="text-danger">{{ 'Pending Approval' }}</span>
 									@endif
 								</td>
 							</tr>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LeaveApplicationRequest extends FormRequest
@@ -23,8 +24,12 @@ class LeaveApplicationRequest extends FormRequest
      */
     public function rules()
     {
+        $today = Carbon::now();
         return [
-            'reason_for_leave' => 'required'
+            'reason_for_leave' => 'required',
+            'leave_start_date' => 'required|date|after:today',
+            'leave_end_date' => 'required|date|after:leave_start_date',
+            'user_id' => 'required',
         ];
     }
 }
