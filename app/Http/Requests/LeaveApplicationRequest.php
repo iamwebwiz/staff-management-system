@@ -24,7 +24,6 @@ class LeaveApplicationRequest extends FormRequest
      */
     public function rules()
     {
-        $today = Carbon::now();
         return [
             'reason_for_leave' => 'required',
             'leave_start_date' => 'required|date|after:today',

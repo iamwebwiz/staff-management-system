@@ -12,6 +12,7 @@ namespace App\Repositories;
 use App\Jobs\SendLeaveStatusEmail;
 use App\Staff;
 use App\StaffLeave;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class LeaveManagementRepository
@@ -24,13 +25,19 @@ class LeaveManagementRepository
 
     public function applyForLeave(Request $request){
 
-        $leave_details = $this->buildLeaveProperties($request);
-
-        $create_staff_leave = StaffLeave::create($leave_details);
-        if ($create_staff_leave) {
-            return redirect()->route("my-leave", $create_staff_leave->staff_id);
+        $staff = Staff::find($request->get('user_id'));
+        $outstanding_leave_days = $staff->getOutStandingLeaveDays();
+        $number_of_leave_days_applying_for = $this->getNumberOfLeaveDaysApplyingFor($request);
+        if ($number_of_leave_days_applying_for > $outstanding_leave_days) {
+            return redirect()->back()->with([
+                'err' => 'error',
+                'message' => "number of leave days you're applying for (".$number_of_leave_days_applying_for.") is greater than your outstanding leave days (".$outstanding_leave_days.")"
+            ]);
         }
-        return redirect()->back();
+
+        $leave_details = $this->buildLeaveRequestDetails($request, $staff);
+        $create_staff_leave = StaffLeave::create($leave_details);
+        return redirect()->route("my-leave", $create_staff_leave->staff_id);
     }
 
 
@@ -63,13 +70,27 @@ class LeaveManagementRepository
         return redirect()->route('approved-leave');
     }
 
+
+
     /**
      * @param Request $request
+     * @return int
+     */
+    private function getNumberOfLeaveDaysApplyingFor(Request $request)
+    {
+        $leave_start_date = Carbon::parse($request->get('leave_start_date'));
+        $leave_end_date = Carbon::parse($request->get('leave_end_date'));
+        $number_of_leave_days_applying_for = getNumberOfWeekDaysBetweenTwoDates($leave_start_date, $leave_end_date);
+        return $number_of_leave_days_applying_for;
+    }
+
+    /**
+     * @param Request $request
+     * @param $staff
      * @return array
      */
-    private function buildLeaveProperties(Request $request)
+    private function buildLeaveRequestDetails(Request $request, $staff)
     {
-        $staff = Staff::find($request->get('user_id'));
         $leave_details = $request->except('token', 'user_id');
         $leave_details = array_add($leave_details, 'staff_id', $staff->id);
         return $leave_details;

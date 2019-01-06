@@ -20,7 +20,7 @@ class Staff extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function outStandingLeaveDays(){
+    public function getOutStandingLeaveDays(){
         return ($this->getTotalAccruedLeaveDays() - $this->getTotalLeaveDaysTaken());
     }
 
@@ -46,7 +46,6 @@ class Staff extends Model
 
         return $this->hasMany(StaffLeave::class, 'staff_id');
     }
-
 
 
 

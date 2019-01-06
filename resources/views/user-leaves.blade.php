@@ -29,8 +29,8 @@
 						<tbody>
 							<tr>
 								<td class="text-center">{{ $counter }}</td>
-								<td class="text-center">{{ $leaf->leave_start_date}}</td>
-								<td class="text-center">{{ $leaf->leave_end_date}}</td>
+								<td class="text-center">{{ $leaf->leave_start_date->format('l jS \\of F Y')}}</td>
+								<td class="text-center">{{ $leaf->leave_end_date->format('l jS \\of F Y')}}</td>
 								<td class="text-center">{{ $leaf->reason_for_leave }}</td>
 								<td class="text-center">
 									@if ($leaf->is_approved == true)
