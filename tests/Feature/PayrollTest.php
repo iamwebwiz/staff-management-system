@@ -25,7 +25,7 @@ class PayrollTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_view_form_for_creating_staff_payslip()
     {
-        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create());
+        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create(['is_admin' => true]));
         $this->factoryWithoutObservers(Staff::class)->create();
 
         $staff = Staff::first();
@@ -40,8 +40,8 @@ class PayrollTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_add_staff_payslip()
     {
-        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create());
-        $staff = $this->factoryWithoutObservers(Staff::class)->create();
+        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create(['is_admin' => true]));
+        $staff = $this->factoryWithoutObservers(Staff::class)->create(['user_id' => auth()->id()]);
 
         $pay_slip_details = [
             'staff_id' => $staff->id,
@@ -52,7 +52,8 @@ class PayrollTest extends TestCase
             'year' => 2019
         ];
 
-       $user->post('/payslips', $pay_slip_details);
+       $response = $user->post('/payslips', $pay_slip_details);
+       $response->assertStatus(302);
         $payslip = Payroll::first();
         $this->assertEquals(100000,$payslip->gross_salary);
         $this->assertDatabaseHas('payrolls', $pay_slip_details);
@@ -64,7 +65,7 @@ class PayrollTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_view_all_staff_payslips()
     {
-        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create());
+        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create(['is_admin' => true]));
         $this->factoryWithoutObservers(Staff::class)->create();
         $this->factoryWithoutObservers(Payroll::class, 5)->create();
         $payslip = $this->factoryWithoutObservers(Payroll::class)->create([

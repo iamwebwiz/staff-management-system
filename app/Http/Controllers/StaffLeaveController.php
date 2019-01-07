@@ -34,7 +34,6 @@ class StaffLeaveController extends Controller
 
     public function allPendingLeave(){
         $leaves = $this->leave_management_repository->getAllPendingLeave();
-//        return $leaves;
         return view('leaves', compact('leaves'))->with(['leave_type' => 'Pending Leaves']);
     }
 

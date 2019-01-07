@@ -8,6 +8,7 @@
 <div class="panel panel-default">
 	<div class="panel-body">
 		<h2>View all Leaves By {{ $leaves->user->name }}</h2>
+		<h3>Your current outstanding leave days is: <span class="text-info">{{ $leaves->getOutStandingLeaveDays() }} </span> days</h3>
 		<hr>
 
 		@include('parts.action-buttons')

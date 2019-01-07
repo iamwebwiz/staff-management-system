@@ -26,8 +26,10 @@ class SendGeneralMessageToStaffTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_send_message_to_staff()
     {
-        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create());
-        $staff = $this->factoryWithoutObservers(Staff::class)->create();
+        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create(['is_admin' => true]));
+        $staff = $this->factoryWithoutObservers(Staff::class)->create([
+            'user_id' => auth()->id()
+        ]);
         $message = [
             'id' => $staff->id,
             'email' => 'aliuwahab@gmail.com',
@@ -36,9 +38,10 @@ class SendGeneralMessageToStaffTest extends TestCase
         ];
 
         $response = $user->post("/send/message",$message);
-        $response->assertStatus(302);
 
-        $staff_auth_account = Staff::with('user')->first();
+
+        $response->assertStatus(302);
+        $staff_auth_account = Staff::with('user')->find($staff->id);
         $this->seeEmailSubject($message['subject']);
         $this->seeEmailTo($staff_auth_account->user->email);
         $this->seeEmailContains($message['content']);

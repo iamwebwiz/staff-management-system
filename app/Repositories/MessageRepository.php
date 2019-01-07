@@ -11,10 +11,12 @@ namespace App\Repositories;
 
 use App\Jobs\SendMessageJob;
 use App\Jobs\SendPaySlipJob;
+use App\Mail\EmailStaff;
 use App\Message;
 use App\Payroll;
 use App\Staff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class MessageRepository
 {
@@ -22,7 +24,7 @@ class MessageRepository
 
     public function sendGeneralMessage(Request $sendMessageRequest)
     {
-        $staff = Staff::with('user')->findOrFail($sendMessageRequest->get('id'));
+        $staff = Staff::with('user')->find($sendMessageRequest->get('id'));
         $create_message = $this->createGeneralMessage($sendMessageRequest, $staff);
         if ($create_message) {
             SendMessageJob::dispatch($staff,$create_message);

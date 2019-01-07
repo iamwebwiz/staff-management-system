@@ -25,7 +25,7 @@ class SendPayslipTest extends TestCase
     public function an_authenticated_admin_can_send_payslip_as_message_to_staff()
     {
 
-        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create());
+        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create(['is_admin' => true]));
         $this->factoryWithoutObservers(Staff::class)->create();
         $payslip = $this->factoryWithoutObservers(Payroll::class)->create();
 

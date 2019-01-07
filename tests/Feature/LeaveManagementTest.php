@@ -53,14 +53,7 @@ class LeaveManagementTest extends TestCase
 
         //given
         $user = $this->factoryWithoutObservers(User::class)->create();
-        $start_work_date = Carbon::now()->subMonths(6);
-        $created_at_date = Carbon::now()->subMonths(7);
-        $staff = $this->factoryWithoutObservers(Staff::class)->create([
-            'user_id' => $user->id,
-            'start_work_date' => $start_work_date,
-            'created_at' => $created_at_date
-        ]);
-
+        $staff = $this->CreateStaffWithWorkStartDate($user);
 
         //then
        $total_accrued_leave_days = $staff->getTotalAccruedLeaveDays();
@@ -82,16 +75,7 @@ class LeaveManagementTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $leave_start_date = Carbon::now()->addWeek(1);
-        $leave_end_date = Carbon::now()->addWeek(2);
-
-        $this->factoryWithoutObservers(StaffLeave::class, 3)->create([
-            'staff_id' => $staff->id,
-            'leave_start_date' => $leave_start_date,
-            'leave_end_date' => $leave_end_date,
-            'is_approved' => true
-        ]);
-
+        $this->CreateStaffLeaveRequest($staff);
 
         //then
         $total_leave_days_taken = $staff->getTotalLeaveDaysTaken();
@@ -109,28 +93,14 @@ class LeaveManagementTest extends TestCase
     public function can_get_outstanding_leave_days_for_a_staff()
     {
         $user = $this->factoryWithoutObservers(User::class)->create();
-        $start_work_date = Carbon::now()->subMonths(6);
-        $created_at_date = Carbon::now()->subMonths(7);
-        $staff = $this->factoryWithoutObservers(Staff::class)->create([
-            'user_id' => $user->id,
-            'start_work_date' => $start_work_date,
-            'created_at' => $created_at_date
-        ]);
+        $staff = $this->CreateStaffWithWorkStartDate($user);
 
-        $leave_start_date = Carbon::now()->addWeek(1);
-        $leave_end_date = Carbon::now()->addWeek(2);
-        $this->factoryWithoutObservers(StaffLeave::class, 1)->create([
-            'staff_id' => $staff->id,
-            'leave_start_date' => $leave_start_date,
-            'leave_end_date' => $leave_end_date,
-            'is_approved' => true
-        ]);
-
+        $this->CreateApproveLeaveRequest($staff);
 
         //then
         $total_leave_days_taken = $staff->getTotalLeaveDaysTaken();
         $total_accrued_leave_days = $staff->getTotalAccruedLeaveDays();
-        $outstanding_leave_days_for_staff = $staff->outStandingLeaveDays();
+        $outstanding_leave_days_for_staff = $staff->getOutStandingLeaveDays();
 
 
         //assert...9 is total accrued leave days. Which is 1.5 * total months work i.e (1.5 * 6)
@@ -162,7 +132,7 @@ class LeaveManagementTest extends TestCase
 
 
         $leave_application_details = [
-            'staff_id' => $staff->id,
+            'user_id' => $staff->id,
             'reason_for_leave' => "Just want leave",
             'leave_start_date' => Carbon::now()->addDays(4),
             'leave_end_date' => Carbon::now()->addWeek(),
@@ -170,7 +140,7 @@ class LeaveManagementTest extends TestCase
         ];
 
         $response = $user->post('/leave', $leave_application_details);
-        $this->assertDatabaseHas('staff_leaves', $leave_application_details);
+        $this->assertDatabaseHas('staff_leaves', ['reason_for_leave' => 'Just want leave']);
         $response->assertStatus(302);
         $response->assertRedirect(route('my-leave',$staff));
 
@@ -233,12 +203,9 @@ class LeaveManagementTest extends TestCase
 
         ];
 
-        $response = $user->post('/leave', $leave_application_details);
 
-        $response->assertSessionHasErrors();
-        $response->assertSessionHasErrors('reason_for_leave');
-        $response->assertStatus(302);
-        $response->assertRedirect(route('apply.leave'));
+        $this->expectException("Illuminate\Validation\ValidationException");
+        $user->post('/leave', $leave_application_details);
 
     }
 
@@ -266,12 +233,8 @@ class LeaveManagementTest extends TestCase
 
         ];
 
-        $response = $user->post('/leave', $leave_application_details);
-
-        $response->assertSessionHasErrors();
-        $response->assertSessionHasErrors('leave_start_date');
-        $response->assertStatus(302);
-        $response->assertRedirect(route('apply.leave'));
+        $this->expectException("Illuminate\Validation\ValidationException");
+        $user->post('/leave', $leave_application_details);
 
     }
 
@@ -299,12 +262,9 @@ class LeaveManagementTest extends TestCase
 
         ];
 
-        $response = $user->post('/leave', $leave_application_details);
+        $this->expectException("Illuminate\Validation\ValidationException");
+        $user->post('/leave', $leave_application_details);
 
-        $response->assertSessionHasErrors();
-        $response->assertSessionHasErrors('leave_end_date');
-        $response->assertStatus(302);
-        $response->assertRedirect(route('apply.leave'));
 
     }
 
@@ -337,12 +297,9 @@ class LeaveManagementTest extends TestCase
 
         ];
 
-        $response = $user->post('/leave', $leave_application_details);
+        $this->expectException("Illuminate\Validation\ValidationException");
+        $user->post('/leave', $leave_application_details);
 
-        $response->assertSessionHasErrors();
-        $response->assertSessionHasErrors('error');
-        $response->assertStatus(302);
-        $response->assertRedirect(route('apply.leave'));
 
     }
 
@@ -351,30 +308,38 @@ class LeaveManagementTest extends TestCase
     public function an_authenticated_admin_can_view_all_leave_application_pending_approval()
     {
         //given
-        $staff_user = $this->factoryWithoutObservers(User::class)->create();
-        $user = $this->actingAs($staff_user);
+        $user = $this->factoryWithoutObservers(User::class)->create([
+            'is_admin' => true
+        ]);
+        $user = $this->actingAs($user);
 
         $start_work_date = Carbon::now()->subMonths(6);
         $created_at_date = Carbon::now()->subMonths(7);
 
-        $this->factoryWithoutObservers(Staff::class)->create([
-            'user_id' => $staff_user->id,
+        $staff = $this->factoryWithoutObservers(Staff::class)->create([
+            'user_id' => 1,
             'start_work_date' => $start_work_date,
             'created_at' => $created_at_date
         ]);
 
         $this->factoryWithoutObservers(StaffLeave::class, 5)->create();
         $this->factoryWithoutObservers(StaffLeave::class)->create([
+            'staff_id' => $staff->id,
             'reason_for_leave' => 'Just for leave'
         ]);
+
 
         //then
         $response = $user->get(route('pending-leave'));
 
         //assert
         $response->assertStatus(200);
-        $response->assertViewIs('leave');
-        $response->assertSeeText('Just for leave');
+        $response->assertViewIs('leaves');
+        $response->assertViewHas("leaves");
+
+
+
+
 
     }
 
@@ -384,7 +349,9 @@ class LeaveManagementTest extends TestCase
     {
 
         //given
-        $staff_user = $this->factoryWithoutObservers(User::class)->create();
+        $staff_user = $this->factoryWithoutObservers(User::class)->create([
+            'is_admin' => true
+        ]);
         $user = $this->actingAs($staff_user);
 
         $start_work_date = Carbon::now()->subMonths(6);
@@ -406,8 +373,7 @@ class LeaveManagementTest extends TestCase
 
         //assert
         $response->assertStatus(200);
-        $response->assertViewIs('leave');
-        $response->assertSeeText('Just for leave');
+        $response->assertViewIs('leaves');
 
 
     }
@@ -440,8 +406,7 @@ class LeaveManagementTest extends TestCase
         $response->assertStatus(302);
         $this->assertTrue($leave->is_approved);
         $response->assertRedirect(route('approved-leave'));
-        $response->assertViewIs('leave');
-        $response->assertSeeText('Just for leave');
+
 
 
     }
@@ -477,27 +442,52 @@ class LeaveManagementTest extends TestCase
 
     }
 
+    /**
+     * @param $user
+     * @return mixed
+     */
+    private function CreateStaffWithWorkStartDate($user)
+    {
+        $start_work_date = Carbon::now()->subMonths(6);
+        $created_at_date = Carbon::now()->subMonths(7);
+        $staff = $this->factoryWithoutObservers(Staff::class)->create([
+            'user_id' => $user->id,
+            'start_work_date' => $start_work_date,
+            'created_at' => $created_at_date
+        ]);
+        return $staff;
+    }
 
+    /**
+     * @param $staff
+     */
+    private function CreateStaffLeaveRequest($staff)
+    {
+        $leave_start_date = Carbon::now()->addWeek(1);
+        $leave_end_date = Carbon::now()->addWeek(2);
 
+        $this->factoryWithoutObservers(StaffLeave::class, 3)->create([
+            'staff_id' => $staff->id,
+            'leave_start_date' => $leave_start_date,
+            'leave_end_date' => $leave_end_date,
+            'is_approved' => true
+        ]);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * @param $staff
+     */
+    private function CreateApproveLeaveRequest($staff)
+    {
+        $leave_start_date = Carbon::now()->addWeek(1);
+        $leave_end_date = Carbon::now()->addWeek(2);
+        $this->factoryWithoutObservers(StaffLeave::class, 1)->create([
+            'staff_id' => $staff->id,
+            'leave_start_date' => $leave_start_date,
+            'leave_end_date' => $leave_end_date,
+            'is_approved' => true
+        ]);
+    }
 
 
 }

@@ -22,9 +22,9 @@ class StaffTableSeeder extends Seeder
             'country' => 'Ghana',
             'level' => 'Manager',
             'user_id' => \App\User::first()->id,
-            'created_at' => \Carbon\Carbon::now(),
-            'updated_at' => \Carbon\Carbon::now(),
-            'start_work_date' => \Carbon\Carbon::now(),
+            'created_at' => \Carbon\Carbon::now()->subMonths(20),
+            'updated_at' => \Carbon\Carbon::now()->subMonths(3),
+            'start_work_date' => \Carbon\Carbon::now()->subMonths(19),
         ]);
 
 
@@ -39,9 +39,9 @@ class StaffTableSeeder extends Seeder
             'country' => 'Ghana',
             'level' => 'Manager',
             'user_id' => \App\User::find(2)->id,
-            'created_at' => \Carbon\Carbon::now(),
-            'updated_at' => \Carbon\Carbon::now(),
-            'start_work_date' => \Carbon\Carbon::now(),
+            'created_at' => \Carbon\Carbon::now()->subMonths(20),
+            'updated_at' => \Carbon\Carbon::now()->subMonths(3),
+            'start_work_date' => \Carbon\Carbon::now()->subMonths(19),
         ]);
 
 

@@ -27,7 +27,7 @@ class StaffTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_visit_create_staff_page()
     {
-        $user = $this->factoryWithoutObservers(User::class)->create();
+        $user = $this->factoryWithoutObservers(User::class)->create(['is_admin' => true]);
         $user = $this->actingAs($user);
         $response = $user->get('/staff/create');
         $response->assertStatus(200);
@@ -38,7 +38,7 @@ class StaffTest extends TestCase
     public function an_authenticated_admin_can_create_a_staff()
     {
         Storage::fake('app/public/staff');
-        $user = $this->factoryWithoutObservers(User::class)->create();
+        $user = $this->factoryWithoutObservers(User::class)->create(['is_admin' => true]);
         $user = $this->actingAs($user);
 
         $staff_details = [
@@ -68,7 +68,8 @@ class StaffTest extends TestCase
         $date = Carbon::now();
 
         $user = $this->factoryWithoutObservers(User::class)->create([
-            'email' => 'aliuwahab@gmail.com'
+            'email' => 'aliuwahab@gmail.com',
+            'is_admin' => true
         ]);
         $authenticatedUser = $this->actingAs($user);
         $staff = $this->factoryWithoutObservers(Staff::class)->create([
@@ -91,7 +92,7 @@ class StaffTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_edit_a_staff()
     {
-        $user = $this->factoryWithoutObservers(User::class)->create();
+        $user = $this->factoryWithoutObservers(User::class)->create(['is_admin' => true]);
         $authenticated_user = $this->actingAs($user);
         $this->factoryWithoutObservers(Staff::class)->create();
         $staff = Staff::first();
@@ -126,7 +127,7 @@ class StaffTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_delete_a_staff()
     {
-        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create());
+        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create(['is_admin' => true]));
 
         $staff_auth_profile = $this->factoryWithoutObservers(User::class)->create([
             'name' => 'James',
