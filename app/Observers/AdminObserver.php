@@ -27,9 +27,9 @@ class AdminObserver
     {
         AuditTrail::create([
             'admin_id' => $user->id,
-            'resource_type_affected' => 'admin',
+            'resource_type_affected' => 'user',
             'affected_resource_id' => $user->id,
-            'trail_activity_details' => 'Admin '.$user->name.' was added as an administrator on '.$user->created_at.' by '.auth()->user()->name,
+            'trail_activity_details' => 'Admin '.$user->name.' was added a user on '.$user->created_at.' by '.auth()->user()->name,
         ]);
     }
 
@@ -44,7 +44,7 @@ class AdminObserver
     {
          AuditTrail::create([
             'admin_id' => $user->id,
-            'resource_type_affected' => 'admin',
+            'resource_type_affected' => 'user',
             'affected_resource_id' => $user->id,
             'trail_activity_details' => 'Admin '.$user->name.' Just log into the app on ',
         ]);

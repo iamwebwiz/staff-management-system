@@ -9,6 +9,10 @@
 
 
 function getNumberOfWeekDaysBetweenTwoDates(\Carbon\Carbon $from, \Carbon\Carbon $to){
-    return $week_days = $from->diffInWeekdays($to);
+     $week_days = $from->diffInWeekdays($to);
+    if ($to->isWeekday()) {
+        return $week_days + 1;
+    }
+     return $week_days;
 }
 

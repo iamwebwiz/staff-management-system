@@ -42,7 +42,7 @@
 				</div>
 
 				<div class="form-group">
-					<label for="image">Staff Picture</label>
+					<label for="image">Update Staff Picture</label>
 					<input type="file" name="image" class="form-control">
 				</div>
 
@@ -70,11 +70,11 @@
 					<label for="level">Staff Level</label>
 					<select name="level" class="form-control">
 						<option value="">Select Staff Level</option>
-						<option value="Intern">Intern</option>
-						<option value="Junior">Junior Staff</option>
-						<option value="Senior">Senior Staff</option>
-						<option value="Supervisor">Supervisor</option>
-						<option value="Manager">Manager</option>
+						<option value="Intern" {{ $staff->level == 'Intern' ? 'selected' : ''  }}>Intern</option>
+						<option value="Junior" {{ $staff->level == 'Junior' ? 'selected' : ''  }}>Junior</option>
+						<option value="Senior" {{ $staff->level == 'Senior' ? 'selected' : ''  }}>Senior</option>
+						<option value="Supervisor" {{ $staff->level == 'Supervisor' ? 'selected' : ''  }}>Supervisor</option>
+						<option value="Manager" {{ $staff->level == 'Manager' ? 'selected' : ''  }}>Manager</option>
 					</select>
 				</div>
 
@@ -82,14 +82,14 @@
 				<div class="form-group">
 					<div class="checkbox">
 						<label>
-							<input type="checkbox" name="is_admin" {{ old('is_admin') ? 'checked' : '' }}> Make Admin
+							<input type="checkbox" name="is_admin" {{ $staff->user->is_admin ? 'checked' : '' }}> Make Admin
 						</label>
 					</div>
 				</div>
 
 				<div class="form-group">
 					<label for="start_work_date">Work Start Date</label>
-					<input type="date" name="start_work_date" placeholder="12th June, 2018" value="{{ old('start_work_date') }}" class="form-control">
+					<input type="date" name="start_work_date" value="{{ $staff->start_work_date->format('Y-m-d') }}" class="form-control">
 				</div>
 
 				<div class="form-group">

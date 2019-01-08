@@ -19,7 +19,7 @@ class StaffRepository
     public $profile_image;
     public $admin_repository;
 
-    public function __construct(StaffProfileImageRepository $imageRepository, AdminRepository $admin_repository)
+    public function __construct(StaffProfileImageRepository $imageRepository, UserRepository $admin_repository)
     {
         $this->profile_image = $imageRepository;
         $this->admin_repository = $admin_repository;
@@ -32,7 +32,7 @@ class StaffRepository
             return $respondsToStaffCreated->unSuccessfulResponse("No file selected!");
         }
 
-        $admin = $this->admin_repository->createAdmin($request);
+        $admin = $this->admin_repository->createUser($request);
         $staff_details = $this->buildStaffProperties($request, $profile_image, $admin);
         $create_staff = Staff::create($staff_details);
         if ($create_staff) {
@@ -61,7 +61,7 @@ class StaffRepository
         if (!$filename) {
             $filename = $staff->image;
         }
-        $admin = $this->admin_repository->updateAdmin($request, $request->get('user_id'));
+        $admin = $this->admin_repository->updateUser($request, $request->get('user_id'));
         $staff_details = $this->buildStaffProperties($request, $filename, $admin);
         $update_staff = Staff::where('id', $staff->id)->update($staff_details);
         if ($update_staff) {

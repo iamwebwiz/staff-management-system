@@ -14,7 +14,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class AdminRepository
+class UserRepository
 {
 
 
@@ -22,9 +22,9 @@ class AdminRepository
      * @param Request $request
      * @return
      */
-    public function createAdmin(Request $request)
+    public function createUser(Request $request)
     {
-        list($create_admin_details, $generate_password) = $this->buildAdminProperties($request);
+        list($create_admin_details, $generate_password) = $this->buildUserProperties($request);
         $create_admin = User::create($create_admin_details);
         SendAdminLoginJob::dispatch($create_admin, $password = ['password' => $generate_password]);
         return $create_admin;
@@ -35,7 +35,7 @@ class AdminRepository
      * @param Request $request
      * @return array
      */
-    public function buildAdminProperties(Request $request)
+    public function buildUserProperties(Request $request)
     {
         $create_admin_details = ['name' => $request->get('name'), 'email' => $request->get('email')];
         $generate_password = str_random(5);
@@ -51,7 +51,7 @@ class AdminRepository
      * @param Request $request , $id
      * @return
      */
-    public function updateAdmin(Request $request, $id)
+    public function updateUser(Request $request, $id)
     {
         $update_details = ['name' => $request->get('name'), 'email' => $request->get('email')];
         if ($request->get('is_admin')) {

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class StaffLeave extends Model
@@ -20,14 +19,6 @@ class StaffLeave extends Model
         return $this->belongsTo(Staff::class, 'staff_id');
     }
 
-
-//    public function getLeaveStartDateAttribute($value){
-//        return Carbon::parse($value)->format('l jS \\of F Y');
-//    }
-//
-//    public function getLeaveEndDateAttribute($value){
-//        return Carbon::parse($value)->format('l jS \\of F Y');
-//    }
 
 
 

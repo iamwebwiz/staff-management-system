@@ -53,13 +53,16 @@ class LeaveManagementTest extends TestCase
 
         //given
         $user = $this->factoryWithoutObservers(User::class)->create();
-        $staff = $this->CreateStaffWithWorkStartDate($user);
+        $start_work_date = Carbon::createFromDate('2018', 06, 01);
+        $created_at_date = Carbon::createFromDate('2018', 05, 01);
+        $upto = Carbon::createFromDate('2019', 01, 01);
+        $staff = $this->CreateStaffWithWorkStartDate($user,$start_work_date,$created_at_date);
 
         //then
-       $total_accrued_leave_days = $staff->getTotalAccruedLeaveDays();
+       $total_accrued_leave_days = $staff->getTotalAccruedLeaveDays($upto);
 
-       //assert
-        $this->assertEquals(9, $total_accrued_leave_days);
+       //assert...10.5 is total accrued leave days. Which is 1.5 * total months work i.e (1.5 * 7) between start date and upto date
+        $this->assertEquals(10.5, $total_accrued_leave_days);
 
 
     }
@@ -75,13 +78,16 @@ class LeaveManagementTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $this->CreateStaffLeaveRequest($staff);
+        $leave_start_date = Carbon::createFromDate('2018', 12, 07);
+        $leave_end_date = Carbon::createFromDate('2018', 12, 14);
+
+        $this->CreateStaffLeaveRequest($staff,$leave_start_date,$leave_end_date);
 
         //then
         $total_leave_days_taken = $staff->getTotalLeaveDaysTaken();
 
-        //assert... 15 is representing the number of week days in the above three leave created
-        $this->assertEquals(15, $total_leave_days_taken);
+        //assert... 18 is representing the number of week days in the above three leave created
+        $this->assertEquals(18, $total_leave_days_taken);
 
 
     }
@@ -93,21 +99,30 @@ class LeaveManagementTest extends TestCase
     public function can_get_outstanding_leave_days_for_a_staff()
     {
         $user = $this->factoryWithoutObservers(User::class)->create();
-        $staff = $this->CreateStaffWithWorkStartDate($user);
 
-        $this->CreateApproveLeaveRequest($staff);
+        $start_work_date = Carbon::createFromDate('2018', 06, 01);
+        $created_at_date = Carbon::createFromDate('2018', 05, 01);
+        $upto = Carbon::createFromDate('2019', 01, 01);
+
+        $staff = $this->CreateStaffWithWorkStartDate($user,$start_work_date,$created_at_date);
+
+        $leave_start_date = Carbon::createFromDate('2018', 12, 07); // A Friday
+        $leave_end_date = Carbon::createFromDate('2018', 12, 14); // A Friday
+
+        $this->CreateApproveLeaveRequest($staff,$leave_start_date,$leave_end_date);
 
         //then
+        $total_accrued_leave_days = $staff->getTotalAccruedLeaveDays($upto);
         $total_leave_days_taken = $staff->getTotalLeaveDaysTaken();
-        $total_accrued_leave_days = $staff->getTotalAccruedLeaveDays();
-        $outstanding_leave_days_for_staff = $staff->getOutStandingLeaveDays();
+        $outstanding_leave_days_for_staff = $staff->getOutStandingLeaveDays($upto);
 
 
-        //assert...9 is total accrued leave days. Which is 1.5 * total months work i.e (1.5 * 6)
-        $this->assertEquals(9, $total_accrued_leave_days);
-        // 5 is representing the number of week days in the above 1 week leave created
-        $this->assertEquals(5, $total_leave_days_taken);
-        $this->assertEquals(4, $outstanding_leave_days_for_staff);
+        //assert...10.5 is total accrued leave days. Which is 1.5 * total months work i.e (1.5 * 7) between start date and upto date
+        $this->assertEquals(10.5, $total_accrued_leave_days);
+        // 6 is representing the number of week days in the above 1 week leave created at => $this->CreateStaffWithWorkStartDate
+        $this->assertEquals(6, $total_leave_days_taken);
+        //4.5 is $total_accrued_leave_days minus $total_leave_days_taken
+        $this->assertEquals(4.5, $outstanding_leave_days_for_staff);
 
 
 
@@ -143,9 +158,6 @@ class LeaveManagementTest extends TestCase
         $this->assertDatabaseHas('staff_leaves', ['reason_for_leave' => 'Just want leave']);
         $response->assertStatus(302);
         $response->assertRedirect(route('my-leave',$staff));
-
-//        $response->assertViewIs('user-leaves');
-
 
     }
 
@@ -205,7 +217,8 @@ class LeaveManagementTest extends TestCase
 
 
         $this->expectException("Illuminate\Validation\ValidationException");
-        $user->post('/leave', $leave_application_details);
+        $response = $user->post('/leave', $leave_application_details);
+//        $response->assertStatus(302);
 
     }
 
@@ -446,10 +459,9 @@ class LeaveManagementTest extends TestCase
      * @param $user
      * @return mixed
      */
-    private function CreateStaffWithWorkStartDate($user)
+    private function CreateStaffWithWorkStartDate($user,$start_work_date,$created_at_date)
     {
-        $start_work_date = Carbon::now()->subMonths(6);
-        $created_at_date = Carbon::now()->subMonths(7);
+
         $staff = $this->factoryWithoutObservers(Staff::class)->create([
             'user_id' => $user->id,
             'start_work_date' => $start_work_date,
@@ -461,10 +473,8 @@ class LeaveManagementTest extends TestCase
     /**
      * @param $staff
      */
-    private function CreateStaffLeaveRequest($staff)
+    private function CreateStaffLeaveRequest($staff,$leave_start_date,$leave_end_date)
     {
-        $leave_start_date = Carbon::now()->addWeek(1);
-        $leave_end_date = Carbon::now()->addWeek(2);
 
         $this->factoryWithoutObservers(StaffLeave::class, 3)->create([
             'staff_id' => $staff->id,
@@ -477,10 +487,8 @@ class LeaveManagementTest extends TestCase
     /**
      * @param $staff
      */
-    private function CreateApproveLeaveRequest($staff)
+    private function CreateApproveLeaveRequest($staff,$leave_start_date,$leave_end_date)
     {
-        $leave_start_date = Carbon::now()->addWeek(1);
-        $leave_end_date = Carbon::now()->addWeek(2);
         $this->factoryWithoutObservers(StaffLeave::class, 1)->create([
             'staff_id' => $staff->id,
             'leave_start_date' => $leave_start_date,

@@ -30,7 +30,6 @@ class LeaveManagementRepository
         $number_of_leave_days_applying_for = $this->getNumberOfLeaveDaysApplyingFor($request);
         if ($number_of_leave_days_applying_for > $outstanding_leave_days) {
             return redirect()->back()->with([
-                'err' => 'error',
                 'message' => "number of leave days you're applying for (".$number_of_leave_days_applying_for.") is greater than your outstanding leave days (".$outstanding_leave_days.")"
             ]);
         }

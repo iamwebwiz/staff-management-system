@@ -28,7 +28,14 @@ class CreateStaffRequest extends FormRequest
             'email' => 'required|email|max:255|unique:users',
             'image' => 'required|mimes:jpg,tiff,png,svg,gif,bmp,jpeg|max:10240',
             'address' => 'max:255',
-            'level' => 'required'
+            'level' => 'required',
+            'city' => 'required',
+            'age' => 'required',
+            'phone' => 'required',
+            'state' => 'required',
+            'country' => 'required',
+            'start_work_date' => 'required',
         ];
     }
 }
+

@@ -20,12 +20,19 @@ class Staff extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function getOutStandingLeaveDays(){
-        return ($this->getTotalAccruedLeaveDays() - $this->getTotalLeaveDaysTaken());
+    public function getOutStandingLeaveDays($upto = null){
+        if (is_null($upto)) {
+            $upto = Carbon::now();
+        }
+        return ($this->getTotalAccruedLeaveDays($upto) - $this->getTotalLeaveDaysTaken());
     }
 
-    public function getTotalAccruedLeaveDays(){
-        return (1.5 * ($this->start_work_date->diffInMonths(Carbon::now())));
+    public function getTotalAccruedLeaveDays($upto = null){
+
+        if (is_null($upto)) {
+            $upto = Carbon::now();
+        }
+        return (env("ACCRUED_LEAVE_DAYS_IN_A_MONTH") * ($this->start_work_date->diffInMonths($upto)));
     }
 
 

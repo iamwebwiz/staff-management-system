@@ -51,6 +51,7 @@ class StaffTest extends TestCase
             'state' => 'Ghana',
             'country' => 'Ghana',
             'level' => 'Manager',
+            'start_work_date' => Carbon::now(),
             'image' => $file = UploadedFile::fake()->image('avatar.jpg')
         ];
 
@@ -68,15 +69,18 @@ class StaffTest extends TestCase
         $date = Carbon::now();
 
         $user = $this->factoryWithoutObservers(User::class)->create([
+            'name' => 'John Doe',
             'email' => 'aliuwahab@gmail.com',
             'is_admin' => true
         ]);
         $authenticatedUser = $this->actingAs($user);
-        $staff = $this->factoryWithoutObservers(Staff::class)->create([
+        $create_staff = $this->factoryWithoutObservers(Staff::class)->create([
             'age' => 29,
             'user_id' => $user->id,
             'start_work_date' => $date
         ]);
+
+        $staff = Staff::with('user')->find($create_staff->id);
 
         $response = $authenticatedUser->get(route("show-staff", $staff));
         $response->assertStatus(200);
