@@ -3,17 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\AuditTrail;
+use App\Repositories\HomeRepository;
 
 class HomeController extends Controller
 {
+
+    public $home_repository;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(HomeRepository $home_repository)
     {
         $this->middleware('auth');
+        $this->home_repository = $home_repository;
     }
 
     /**
@@ -23,8 +28,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $recent_activities = AuditTrail::latest()->get();
-        return view('home', compact('recent_activities'));
+        return $this->home_repository->userVisitHomePage();
     }
 
 

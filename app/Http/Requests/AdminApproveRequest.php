@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class CreateAdminRequest extends FormRequest
+class AdminApproveRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,8 +14,12 @@ class CreateAdminRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if (Auth::user()->is_admin == true) {
+            return true;
+        }
+        return false;
     }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -24,9 +29,7 @@ class CreateAdminRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'email' => 'required',
-            'is_super_admin' => 'required',
+            'leave_id' => 'required'
         ];
     }
 }

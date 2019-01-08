@@ -9,10 +9,9 @@
 	<div class="panel-body">
 		<h2>View all staff members</h2>
 		<hr>
-		<a href="{{ url('/home') }}" class="btn btn-primary btn-md"><i class="fa fa-dashboard"></i> Dashboard</a>
-		<a href="{{ url('/staff/create') }}" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add new staff</a>
-		<a href="{{ url('/payslips') }}" class="btn btn-info btn-md"><i class="fa fa-plus"></i> View Payrolls</a>
-		<a href="{{ url('/users') }}" class="btn btn-default btn-md"><i class="fa fa-plus"></i> All Admins</a>
+
+		@include('parts.action-buttons')
+
 		<hr>
 		@include('parts.message-block')
 		<div class="table-responsive">
@@ -29,7 +28,7 @@
 						<tbody>
 							<tr>
 								<td class="text-center">{{ $counter }}</td>
-								<td class="text-center">{{ $staff->name }}</td>
+								<td class="text-center">{{ $staff->user->name }}</td>
 								{{--<td class="text-center">{{ $staff->email }}</td>--}}
 								<td class="text-center">{{ $staff->level }}</td>
 								{{--<td class="text-center">{{ $staff->phone }}</td>--}}

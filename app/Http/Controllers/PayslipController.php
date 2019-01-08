@@ -25,15 +25,13 @@ class PayslipController extends Controller
     }
 
     public function index(){
-        $payrolls = Payroll::with("staff")->get();
+        $payrolls = Payroll::with("staff.user")->get();
         return view("all-staff-payrolls", compact('payrolls'));
     }
-
 
     public function create(Staff $staff){
         return view('create-payslip', compact('staff'));
     }
-
 
     public function store(PayrollRequest $request)
     {

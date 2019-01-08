@@ -29,11 +29,11 @@
                         <tbody>
                         <tr>
                             <td>Name:</td>
-                            <td>{{ $staff->name }}</td>
+                            <td>{{ $staff->user->name }}</td>
                         </tr>
                         <tr>
                             <td>Email</td>
-                            <td><a href="mailto:{{ $staff->email }}">{{ $staff->email }}</a></td>
+                            <td><a href="mailto:{{ $staff->user->email }}">{{ $staff->user->email }}</a></td>
                         </tr>
                         <tr>
                             <td>Age:</td>

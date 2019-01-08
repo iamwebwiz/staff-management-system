@@ -9,9 +9,7 @@
 	<div class="panel-body">
 		<h2>View all staff members Payslips</h2>
 		<hr>
-		<a href="{{ url('/home') }}" class="btn btn-primary btn-md"><i class="fa fa-dashboard"></i> Dashboard</a>
-		<a href="{{ url('/new-staff') }}" class="btn btn-success btn-md"><i class="fa fa-plus"></i> Add new staff</a>
-		<a href="{{ url('/all-staff-members/payroll') }}" class="btn btn-info btn-md"><i class="fa fa-plus"></i> View Payrolls</a>
+		@include('parts.action-buttons')
 		<hr>
 		@include('parts.message-block')
 		<div class="table-responsive">
@@ -30,7 +28,7 @@
 						<tbody>
 							<tr>
 								<td class="text-center">{{ $counter }}</td>
-								<td class="text-center">{{ $payroll->staff->name }}</td>
+								<td class="text-center">{{ $payroll->staff->user->name }}</td>
 								<td class="text-center">{{ $payroll->staff->level }}</td>
 								<td class="text-center">{{ $payroll->gross_salary }}</td>
 								<td class="text-center">{{ $payroll->net_salary }}</td>

@@ -32,8 +32,6 @@ $factory->define(App\Staff::class, function (Faker\Generator $faker) {
     $levels = ['Intern', 'Junior', 'Senior', 'Supervisor', 'Manager'];
 
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
         'age' => $faker->randomNumber(),
         'phone' => $faker->phoneNumber,
         'image' => $faker->imageUrl(),
@@ -41,7 +39,9 @@ $factory->define(App\Staff::class, function (Faker\Generator $faker) {
         'city' => $faker->city,
         'state' => $faker->city,
         'country' => $faker->country,
-        'level' => $levels[rand(0,4)],
+        'level' => $levels[rand(1,4)],
+        'user_id' => \App\User::first()->id,
+        'start_work_date' => $faker->date(),
     ];
 });
 
@@ -61,4 +61,17 @@ $factory->define(App\Payroll::class, function (Faker\Generator $faker) {
         'comment' => $faker->sentence,
     ];
 
+});
+
+
+
+
+$factory->define(App\StaffLeave::class, function (Faker\Generator $faker) {
+    return [
+        'staff_id' => \App\Staff::all()->random()->id,
+        'reason_for_leave' => $faker->paragraph,
+        'leave_start_date' => $faker->dateTimeThisMonth('-1 week'),
+        'leave_end_date' => $faker->dateTimeThisMonth,
+        'is_approved' => $faker->boolean,
+    ];
 });

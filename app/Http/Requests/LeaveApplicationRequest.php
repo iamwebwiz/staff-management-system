@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditStaffRequest extends FormRequest
+class LeaveApplicationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +25,9 @@ class EditStaffRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:255|string',
-            'level' => 'required',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string',
-            'address' => 'string|max:255',
+            'reason_for_leave' => 'required',
+            'leave_start_date' => 'required|date|after:today',
+            'leave_end_date' => 'required|date|after:leave_start_date',
             'user_id' => 'required',
         ];
     }

@@ -22,7 +22,7 @@
                 <div style="text-align:center;" class="mui-container">
 
 
-                    <h3 style="margin-top: -5px!important; margin-bottom: 16px!important; color: grey!important;">  Hello {{ $staff->name }}</h3>
+                    <h3 style="margin-top: -5px!important; margin-bottom: 16px!important; color: grey!important;">  Hello {{ $staff->user->name }}</h3>
 
                     {{ $content->content }}
 

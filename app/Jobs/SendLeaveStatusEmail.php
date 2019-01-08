@@ -2,10 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Mail\SendPayslipEmail;
-use App\Message;
-use App\Payroll;
+use App\Mail\LeaveStatusChanged;
 use App\Staff;
+use App\StaffLeave;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,25 +12,24 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Mail;
 
-class SendPaySlipJob implements ShouldQueue
+class SendLeaveStatusEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    protected $staff;
-    protected $content;
-    protected $payroll;
+    public $staff;
+    public $leave;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Staff $staff, Message $message, Payroll $payroll)
+    public function __construct(Staff $staff, StaffLeave $leave)
     {
         $this->staff = $staff;
-        $this->content = $message;
-        $this->payroll = $payroll;
+        $this->leave = $leave;
     }
+
 
     /**
      * Execute the job.
@@ -40,6 +38,6 @@ class SendPaySlipJob implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->staff->user->email)->send(new SendPayslipEmail($this->staff,$this->content, $this->payroll));
+        Mail::to($this->staff->user->email)->send(new LeaveStatusChanged($this->staff,$this->leave));
     }
 }

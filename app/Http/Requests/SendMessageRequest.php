@@ -29,4 +29,8 @@ class SendMessageRequest extends FormRequest
             'content' => 'required'
         ];
     }
+
+
+
+
 }

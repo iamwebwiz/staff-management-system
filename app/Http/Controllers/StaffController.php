@@ -27,13 +27,13 @@ class StaffController extends Controller implements RespondsToStaffCreated
 
     public function index()
     {
-        $staff = Staff::orderBy('created_at', 'asc')->get();
+        $staff = $this->staff_repository->getAllStaff();
         return view('all-staff-members', compact('staff'));
     }
 
     public function edit($staff_id)
     {
-        $staff =  Staff::find($staff_id);
+        $staff =  Staff::with('user')->find($staff_id);
         return view('edit-staff-member', compact('staff'));
     }
 

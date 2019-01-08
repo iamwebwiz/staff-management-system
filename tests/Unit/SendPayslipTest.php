@@ -25,14 +25,15 @@ class SendPayslipTest extends TestCase
     public function an_authenticated_admin_can_send_payslip_as_message_to_staff()
     {
 
-        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create());
-        $staff = $this->factoryWithoutObservers(Staff::class)->create();
+        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create(['is_admin' => true]));
+        $this->factoryWithoutObservers(Staff::class)->create();
         $payslip = $this->factoryWithoutObservers(Payroll::class)->create();
 
+        $staff = Staff::with('user')->first();
         $response = $user->get('send/'.$staff->id.'/payroll/'.$payslip->id);
         $response->assertStatus(302);
 
-        $this->seeEmailTo($staff->email);
+        $this->seeEmailTo($staff->user->email);
         $this->seeEmailSubject("Your Invoice for " . $payslip->month . " " . $payslip->year);
 
     }

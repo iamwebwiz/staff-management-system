@@ -19,6 +19,7 @@ class MessageController extends Controller
 
 
     public function createMessage(Staff $staff){
+        $staff = Staff::with('user')->whereId($staff->id)->first();
          return view('message',compact('staff'));
     }
 

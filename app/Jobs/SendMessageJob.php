@@ -37,6 +37,6 @@ class SendMessageJob implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->staff)->send(new EmailStaff($this->staff,$this->content));
+        Mail::to($this->staff->user->email)->send(new EmailStaff($this->staff,$this->content));
     }
 }

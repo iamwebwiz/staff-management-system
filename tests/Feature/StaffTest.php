@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Staff;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -26,7 +27,7 @@ class StaffTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_visit_create_staff_page()
     {
-        $user = $this->factoryWithoutObservers(User::class)->create();
+        $user = $this->factoryWithoutObservers(User::class)->create(['is_admin' => true]);
         $user = $this->actingAs($user);
         $response = $user->get('/staff/create');
         $response->assertStatus(200);
@@ -37,7 +38,7 @@ class StaffTest extends TestCase
     public function an_authenticated_admin_can_create_a_staff()
     {
         Storage::fake('app/public/staff');
-        $user = $this->factoryWithoutObservers(User::class)->create();
+        $user = $this->factoryWithoutObservers(User::class)->create(['is_admin' => true]);
         $user = $this->actingAs($user);
 
         $staff_details = [
@@ -50,13 +51,14 @@ class StaffTest extends TestCase
             'state' => 'Ghana',
             'country' => 'Ghana',
             'level' => 'Manager',
+            'start_work_date' => Carbon::now(),
             'image' => $file = UploadedFile::fake()->image('avatar.jpg')
         ];
 
         $user->post("/staff",$staff_details);
-        $staff = Staff::first();
-        $this->assertDatabaseHas('staff', ['name' => "Aliu"]);
-        $this->assertEquals("Aliu", $staff->name);
+        $staff = Staff::with('user')->first();
+        $this->assertDatabaseHas('staff', ['age' => 29]);
+        $this->assertEquals("Aliu", $staff->user->name);
 
     }
 
@@ -64,17 +66,28 @@ class StaffTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_view_a_staff()
     {
-        $user = $this->factoryWithoutObservers(User::class)->create();
-        $user = $this->actingAs($user);
-        $staff = $this->factoryWithoutObservers(Staff::class)->create([
-            'name' => 'Aliu'
+        $date = Carbon::now();
+
+        $user = $this->factoryWithoutObservers(User::class)->create([
+            'name' => 'John Doe',
+            'email' => 'aliuwahab@gmail.com',
+            'is_admin' => true
+        ]);
+        $authenticatedUser = $this->actingAs($user);
+        $create_staff = $this->factoryWithoutObservers(Staff::class)->create([
+            'age' => 29,
+            'user_id' => $user->id,
+            'start_work_date' => $date
         ]);
 
-        $response = $user->get("/staff/".$staff->id);
+        $staff = Staff::with('user')->find($create_staff->id);
+
+        $response = $authenticatedUser->get(route("show-staff", $staff));
         $response->assertStatus(200);
-        $response->assertSeeText($staff->name);
-        $response->assertSeeText($staff->email);
+        $response->assertSeeText($staff->user->name);
+        $response->assertSeeText($staff->user->email);
         $response->assertSeeText($staff->phone);
+
     }
 
 
@@ -83,8 +96,8 @@ class StaffTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_edit_a_staff()
     {
-        $user = $this->factoryWithoutObservers(User::class)->create();
-        $user = $this->actingAs($user);
+        $user = $this->factoryWithoutObservers(User::class)->create(['is_admin' => true]);
+        $authenticated_user = $this->actingAs($user);
         $this->factoryWithoutObservers(Staff::class)->create();
         $staff = Staff::first();
 
@@ -98,15 +111,18 @@ class StaffTest extends TestCase
             'state' => 'Ghana',
             'country' => 'Ghana',
             'level' => 'Manager',
-            'image' => $file = UploadedFile::fake()->image('avatar.jpg')
+            'image' => $file = UploadedFile::fake()->image('avatar.jpg'),
+            'user_id' => $user->id
         ];
 
-        $user->put("/staff/".$staff->id,$updated_staff_details);
+
+
+        $authenticated_user->put("/staff/".$staff->id,$updated_staff_details);
 
         $staff = Staff::first();
-        $this->assertEquals("Aliu Edited", $staff->name);
+        $this->assertEquals("Aliu Edited", $staff->user->name);
         $this->assertEquals("Shalom Estate Edited", $staff->address);
-        $this->assertDatabaseHas('staff', ['name' => "Aliu Edited"]);
+        $this->assertDatabaseHas('users', ['name' => "Aliu Edited"]);
         $this->assertDatabaseHas('staff', ['address' => "Shalom Estate Edited"]);
 
     }
@@ -115,17 +131,24 @@ class StaffTest extends TestCase
     /** @test */
     public function an_authenticated_admin_can_delete_a_staff()
     {
-        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create());
-        $this->factoryWithoutObservers(Staff::class)->create([
+        $user = $this->actingAs($this->factoryWithoutObservers(User::class)->create(['is_admin' => true]));
+
+        $staff_auth_profile = $this->factoryWithoutObservers(User::class)->create([
             'name' => 'James',
             'email' => 'james@gmail.com'
+        ]);
+
+        $this->factoryWithoutObservers(Staff::class)->create([
+            'address' => 'Wa Accra',
+            'user_id' => $staff_auth_profile->id
         ]);
 
         $staff = Staff::first();
 
         $response = $user->delete('staff/'.$staff->id);
         $response->assertStatus(302);
-        $this->assertDatabaseMissing('staff',['name' => 'James']);
+        $this->assertDatabaseMissing('users',['name' => 'James']);
+        $this->assertDatabaseMissing('staff',['address' => 'Wa Accra']);
 
 
     }

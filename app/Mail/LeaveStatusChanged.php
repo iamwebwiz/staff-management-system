@@ -2,29 +2,28 @@
 
 namespace App\Mail;
 
-use App\Message;
 use App\Staff;
+use App\StaffLeave;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class EmailStaff extends Mailable
+class LeaveStatusChanged extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $staff;
-    public $content;
-
+    public $leave;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Staff $staff, Message $message)
+    public function __construct(Staff $staff, StaffLeave $leave)
     {
         $this->staff = $staff;
-        $this->content = $message;
+        $this->leave = $leave;
     }
 
     /**
@@ -34,8 +33,8 @@ class EmailStaff extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.message')
+        return $this->view('emails.email-leave-status')
             ->to($this->staff->user->email)
-            ->subject($this->content->subject);
+            ->subject('Status of your leave application');
     }
 }
