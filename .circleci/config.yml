@@ -1,0 +1,71 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+    # specify the version you desire here
+    - image: circleci/php:7.1-browsers
+
+    # Specify service dependencies here if necessary
+    # CircleCI maintains a library of pre-built images
+    # documented at https://circleci.com/docs/2.0/circleci-images/
+    # - image: circleci/mysql:9.4
+
+    working_directory: ~/repo
+
+    steps:
+    - run: sudo apt-get update && sudo apt-get install -y libpng-dev libjpeg62-turbo-dev
+    - checkout
+
+    - run:
+        name: Install PHP Extensions
+        command: sudo docker-php-ext-install gd exif
+
+    # Download and cache dependencies
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "composer.json" }}
+        # fallback to using the latest cache if no exact match is found
+        - v1-dependencies-
+
+    - run: composer install -n --prefer-dist
+
+    - save_cache:
+        paths:
+        - ./vendor
+        key: v1-dependencies-{{ checksum "composer.json" }}
+
+    - run:
+        name: Setup Laravel testing environment variables for CircleCI test
+        command: cp .env.testing .env
+
+    - run:
+        name: Update composer to latest version
+        command: composer self-update
+
+    - restore_cache:
+        keys:
+        - composer-v1-{{ checksum "composer.json" }}
+        - composer-v1-
+
+    - run: composer install -n --prefer-dist --ignore-platform-reqs
+
+    - save_cache:
+        key: composer-v1-{{ checksum "composer.json" }}
+        paths:
+        - vendor
+
+    - run:
+        name: Create SQLite Database
+        command: touch database/testing.sqlite
+
+    - run:
+        name: Migrate Laravel Database
+        command: php artisan migrate --env=testing --force
+
+    - run:
+        name: Test 1 - Run Phpunit for Server-Side HTTP Requests & PHP Unit Testing
+        command: vendor/bin/phpunit

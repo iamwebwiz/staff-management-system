@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Message;
+use App\Staff;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -11,14 +13,18 @@ class EmailStaff extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $staff;
+    public $content;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Staff $staff, Message $message)
     {
-        //
+        $this->staff = $staff;
+        $this->content = $message;
     }
 
     /**
@@ -28,6 +34,8 @@ class EmailStaff extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->view('emails.message')
+            ->to($this->staff->user->email)
+            ->subject($this->content->subject);
     }
 }
