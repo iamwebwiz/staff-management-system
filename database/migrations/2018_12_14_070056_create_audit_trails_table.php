@@ -17,7 +17,7 @@ class CreateAuditTrailsTable extends Migration
             $table->increments('id');
             $table->integer('admin_id');
             $table->longText('trail_activity_details');
-            $table->enum('resource_type_affected', ['staff','admin','messaging']);
+            $table->enum('resource_type_affected', ['staff','admin','messaging','payroll']);
             $table->integer('affected_resource_id');
             $table->timestamps();
         });

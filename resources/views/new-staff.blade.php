@@ -7,10 +7,9 @@
 
 <div class="panel panel-default">
 	<div class="panel-body">
-		<h2>Add new staff</h2>
+		<h2>Add New Admin/Staff</h2>
 		<hr>
-		<a href="{{ url('/home') }}" class="btn btn-primary btn-md"><i class="fa fa-dashboard"></i> Dashboard</a>
-		<a href="{{ url('/all-staff-members') }}" class="btn btn-primary btn-md"><i class="fa fa-users"></i> View staff members</a>
+		@include('parts.action-buttons')
 		<hr>
 		@include('parts.message-block')
 		<form action="{{ route('add-new-staff') }}" method="post" enctype="multipart/form-data">
@@ -70,6 +69,19 @@
 					<option value="Supervisor">Supervisor</option>
 					<option value="Manager">Manager</option>
 				</select>
+			</div>
+
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" name="is_admin" {{ old('is_admin') ? 'checked' : '' }}> Make Admin
+					</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="start_work_date">Work Start Date</label>
+				<input type="date" name="start_work_date" placeholder="12th June, 2018" value="{{ old('start_work_date') }}" class="form-control">
 			</div>
 
 			<div class="form-group">

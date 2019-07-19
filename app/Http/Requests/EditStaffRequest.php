@@ -25,9 +25,11 @@ class EditStaffRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255|string',
+            'level' => 'required',
             'email' => 'required|email|max:255',
             'phone' => 'required|string',
-            'address' => 'string|max:255'
+            'address' => 'string|max:255',
+            'user_id' => 'required',
         ];
     }
 }
