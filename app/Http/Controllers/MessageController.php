@@ -9,7 +9,6 @@ use App\Staff;
 
 class MessageController extends Controller
 {
-
     protected $message_repository;
 
     public function __construct(MessageRepository $message_repository)
@@ -17,12 +16,10 @@ class MessageController extends Controller
         $this->message_repository = $message_repository;
     }
 
-
     public function createMessage(Staff $staff){
         $staff = Staff::with('user')->whereId($staff->id)->first();
          return view('message',compact('staff'));
     }
-
 
     public function sendMessage(SendMessageRequest $sendMessageRequest){
         return $this->message_repository->sendGeneralMessage($sendMessageRequest);
@@ -31,11 +28,4 @@ class MessageController extends Controller
     public function sendStaffPayroll(Staff $staff, Payroll $payroll){
         return $this->message_repository->sendStaffPayrollMessage($staff,$payroll);
     }
-
-
-
-
-
-
-
 }
